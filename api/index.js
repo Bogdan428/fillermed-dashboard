@@ -813,8 +813,13 @@ app.get('*.ico', (req, res) => {
   res.sendFile(path.join(__dirname, '..', req.path));
 });
 
-// Catch-all route for any other requests
+// Catch-all route for GET requests (but not API routes)
 app.get('*', (req, res) => {
+  // Skip API routes
+  if (req.path.startsWith('/api/')) {
+    return res.status(404).json({ error: 'API endpoint not found' });
+  }
+  
   // If it's an HTML file request, serve it
   if (req.path.endsWith('.html')) {
     const fileName = req.path.substring(1); // Remove leading slash
@@ -823,6 +828,17 @@ app.get('*', (req, res) => {
     // For other requests, serve index.html
     res.sendFile(path.join(__dirname, '../index.html'));
   }
+});
+
+// Catch-all route for POST requests (but not API routes)
+app.post('*', (req, res) => {
+  // Skip API routes
+  if (req.path.startsWith('/api/')) {
+    return res.status(404).json({ error: 'API endpoint not found' });
+  }
+  
+  // For non-API POST requests, return 404
+  res.status(404).json({ error: 'Endpoint not found' });
 });
 
 // Initialize database connection
