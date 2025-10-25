@@ -10,7 +10,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // MongoDB Configuration
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://fillermed-admin:FillerMed2025!@fillermed.jk1v6hh.mongodb.net/?retryWrites=true&w=majority&appName=fillermed';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://fillermed-admin:FillerMed2025!@fillermed.jk1v6hh.mongodb.net/?retryWrites=true&w=majority&appName=fillermed&ssl=true&authSource=admin';
 let db;
 let mongoClient;
 
@@ -48,9 +48,17 @@ app.use(express.static('.'));
 async function connectToMongoDB() {
   try {
     mongoClient = new MongoClient(MONGODB_URI, {
-      serverSelectionTimeoutMS: 5000, // 5 second timeout
-      connectTimeoutMS: 10000, // 10 second timeout
+      serverSelectionTimeoutMS: 10000, // 10 second timeout
+      connectTimeoutMS: 15000, // 15 second timeout
       socketTimeoutMS: 45000, // 45 second timeout
+      ssl: true,
+      sslValidate: true,
+      tls: true,
+      tlsAllowInvalidCertificates: false,
+      tlsAllowInvalidHostnames: false,
+      retryWrites: true,
+      w: 'majority',
+      appName: 'fillermed'
     });
     
     await mongoClient.connect();
@@ -79,10 +87,35 @@ async function connectToMongoDB() {
     
   } catch (error) {
     console.error('❌ MongoDB connection failed:', error);
-    console.log('🔄 Falling back to mock data...');
-    isConnected = false;
-    // Fallback to mock data if MongoDB fails
-    initializeMockData();
+    
+    // Try alternative connection with different SSL settings
+    try {
+      console.log('🔄 Trying alternative MongoDB connection...');
+      const alternativeURI = MONGODB_URI.replace('ssl=true', 'ssl=false').replace('tls=true', 'tls=false');
+      mongoClient = new MongoClient(alternativeURI, {
+        serverSelectionTimeoutMS: 10000,
+        connectTimeoutMS: 15000,
+        socketTimeoutMS: 45000,
+        retryWrites: true,
+        w: 'majority'
+      });
+      
+      await mongoClient.connect();
+      db = mongoClient.db('fillermed');
+      isConnected = true;
+      console.log('✅ Connected to MongoDB Atlas with alternative connection');
+      
+      const collections = await db.listCollections().toArray();
+      console.log('📊 Available collections:', collections.map(c => c.name));
+      await initializeCollections();
+      
+    } catch (altError) {
+      console.error('❌ Alternative MongoDB connection also failed:', altError);
+      console.log('🔄 Falling back to mock data...');
+      isConnected = false;
+      // Fallback to mock data if MongoDB fails
+      initializeMockData();
+    }
   }
 }
 
