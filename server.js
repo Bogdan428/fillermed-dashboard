@@ -18,6 +18,8 @@ console.log('📊 Using URI:', MONGODB_URI.substring(0, 50) + '...');
 console.log('📊 Environment variables:');
 console.log('📊 NODE_ENV:', process.env.NODE_ENV);
 console.log('📊 RENDER:', process.env.RENDER);
+console.log('📊 PORT:', process.env.PORT);
+console.log('📊 All environment variables:', Object.keys(process.env).filter(key => key.includes('MONGO') || key.includes('RENDER') || key.includes('NODE')));
 let db;
 let mongoClient;
 
@@ -298,16 +300,20 @@ console.log('🚀 Starting application - MongoDB connection required');
 
 // Authentication routes
 app.post('/api/login', async (req, res) => {
-  const { username, password } = req.body;
-  
-  if (!username || !password) {
-    return res.status(400).json({ error: 'Username and password are required' });
-  }
-  
   try {
-    let user;
+    console.log('🔍 Login attempt:', { username: req.body.username, hasPassword: !!req.body.password });
+    
+    const { username, password } = req.body;
+    
+    if (!username || !password) {
+      console.log('❌ Missing credentials');
+      return res.status(400).json({ error: 'Username and password are required' });
+    }
+    
+    console.log('📊 Database status:', { isConnected, hasDb: !!db });
     
     if (!db) {
+      console.log('❌ No database connection');
       return res.status(500).json({ 
         error: 'Database connection required', 
         message: 'Cannot authenticate without MongoDB connection' 
@@ -315,7 +321,8 @@ app.post('/api/login', async (req, res) => {
     }
     
     // Use MongoDB only
-    user = await db.collection('users').findOne({ username });
+    console.log('🔍 Searching for user in MongoDB...');
+    const user = await db.collection('users').findOne({ username });
     
     if (!user) {
       return res.status(401).json({ error: 'Invalid credentials' });
@@ -339,8 +346,13 @@ app.post('/api/login', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error('❌ Login error:', error);
+    console.error('📊 Error details:', error.message);
+    res.status(500).json({ 
+      error: 'Internal server error',
+      message: error.message,
+      timestamp: new Date().toISOString()
+    });
   }
 });
 
@@ -708,6 +720,17 @@ app.get('/api/dashboard/stats', async (req, res) => {
     console.error('Error fetching dashboard stats:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
+});
+
+// Test endpoint - simple response
+app.get('/api/test', (req, res) => {
+  res.json({
+    status: 'ok',
+    message: 'API is working',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development',
+    platform: process.env.RENDER ? 'Render' : 'Local'
+  });
 });
 
 // Health check endpoint
