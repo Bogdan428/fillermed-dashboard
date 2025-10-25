@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="ro" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FillerMed</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link href="./assets/css/output.css" rel="stylesheet">
+</head>
+
+
+
+<body class="h-full transition-colors duration-300">
+    <div class="flex h-screen">
+        <!-- Sidebar Overlay (for mobile) -->
+        <div id="sidebar-overlay" class=""></div>
+
+        <!-- Sophisticated Sidebar -->
+        <div id="sidebar" class="w-72 bg-white dark:bg-gray-800 shadow-premium border-r border-gray-200 dark:border-gray-700">
+            <div class="flex flex-col h-full">
+                <!-- Logo and Close Button Section -->
+                <div class="p-6 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center h-[85px]">
+                    <div>
+                         <a href="index.html" class="flex items-center justify-center"> 
+                             <div class="w-32 h-32 flex items-center justify-center bg-transparent">
+                                 <img src="assets/images/logo.png" alt="FillerMed Logo" class="w-28 h-28 object-contain">
+                             </div>
+                         </a>
+                    </div>
+                    <button id="sidebar-close" class="lg:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <i data-lucide="x" class="w-5 h-5 dark:text-gray-300"></i>
+                    </button>
+                </div>
+
+                <!-- Navigation -->
+                <nav class="flex-1 overflow-y-auto py-6 px-4 custom-scrollbar">
+                    <ul class="space-y-2">
+                        <li>
+                            <a href="index.html" class="active flex items-center space-x-3 px-4 py-3 rounded-xl bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/30 dark:to-purple-900/30 text-purple-700 dark:text-primary-300 font-medium shadow-sm transition-all">
+                                <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+                                <span>Panou Principal</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="patients.html" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white font-medium transition-all duration-200">
+                                <i data-lucide="users" class="w-5 h-5"></i>
+                                <span>Clienți</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="appointments.html" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white font-medium transition-all duration-200">
+                                <i data-lucide="calendar" class="w-5 h-5"></i>
+                                <span>Programări</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="reports.html" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white font-medium transition-all duration-200">
+                                <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+                                <span>Rapoarte</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+               
+                <!-- User Profile -->
+                <div class="border-t border-gray-200 dark:border-gray-700 h-20 flex items-center p-4">
+                    <div class="flex items-center space-x-3 p-3 rounded-xl bg-gray-50 dark:bg-gray-700 w-full">
+                        <div class="w-10 h-10 bg-gradient-to-br from-primary-600 to-primary-700 rounded-full flex items-center justify-center">
+                            <span class="text-white font-semibold text-sm">R</span>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-sm font-display font-semibold text-gray-900 dark:text-white">Recepționeră</p>
+                            <p class="text-xs font-body text-gray-500 dark:text-gray-400">Recepție</p>
+                        </div>
+                        <a href="#"><i data-lucide="log-out" class="w-4 h-4 text-gray-400"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Header -->
+            <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 px-4 sm:px-6 py-4 h-[85px]">
+                <div class="flex items-center justify-between flex-wrap gap-4 header-content">
+                    <div class="flex items-center flex-1 min-w-0">
+                        <!-- Hamburger Menu Button (visible on mobile/tablet) -->
+                        <button id="sidebar-toggle" class="hamburger-btn mr-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                            <i data-lucide="menu" class="w-5 h-5 dark:text-gray-300"></i>
+                        </button>
+                        <div class="min-w-0">
+                            <h2 class="text-xl sm:text-2xl font-display font-bold text-gray-900 dark:text-white truncate">Pagina principală</h2>
+                            <p class="text-xs sm:text-sm font-body text-gray-500 dark:text-gray-400 mt-1 truncate">Bun venit!</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2 sm:space-x-3 header-actions flex-shrink-0">
+                        <div class="relative search-container hidden sm:block">
+                            <input type="text" placeholder="Caută..." class="w-40 md:w-48 lg:w-60 px-4 py-2 pl-10 pr-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent font-body bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none">
+                            <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-3 top-3"></i>
+                        </div>
+                        <button id="mobile-search-btn" class="sm:hidden p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                            <i data-lucide="search" class="w-5 h-5"></i>
+                        </button>
+                        <!-- Theme toggle button -->
+                        <button id="theme-toggle" class="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                            <i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i>
+                            <i data-lucide="moon" class="w-5 h-5 block dark:hidden"></i>
+                        </button>
+                        
+                        <!-- Settings Dropdown -->
+                        <div class="relative">
+                            <button id="settings-btn" class="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                                <i data-lucide="settings" class="w-5 h-5"></i>
+                            </button>
+                            
+                            <!-- Settings Dropdown Menu -->
+                            <div id="settings-dropdown" class="hidden absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 z-50 py-2 glass-effect">
+                                <div class="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
+                                    <h3 class="font-display font-semibold text-gray-900 dark:text-white">Setări</h3>
+                                </div>
+                               
+                                <div class="px-4 py-2 border-t border-gray-200 dark:border-gray-700">
+                                    <button onclick="logout()" class="w-full flex items-center justify-center px-4 py-2 bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-lg transition-colors">
+                                        <i data-lucide="log-out" class="w-4 h-4 mr-2"></i>
+                                        Deconectare
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Mobile Search Bar (hidden by default) -->
+                 <div id="mobile-search-container" class="hidden bg-white absolute left-0 w-full right-0 px-4 pb-2 top-[75px] z-[999]">
+                    <div class="relative">
+                        <input type="search" placeholder="Caută..."
+                            class="w-full px-4 py-2 pl-10 pr-4 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent font-body bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none">
+                        <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-3 top-3"></i>
+                    </div>
+                </div>
+
+            </header>
+
+            <!-- Dashboard Content -->
+            <main class="flex-1 overflow-y-auto p-4 sm:p-6 bg-gray-50 dark:bg-gray-900">
+                <!-- Metrics Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8 metrics-grid">
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-premium p-4 sm:p-6 hover-lift animate-slide-in">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs sm:text-sm font-body font-medium text-gray-600 dark:text-gray-400">Total Pacienți</p>
+                        <p class="text-2xl sm:text-3xl font-display font-bold text-gray-900 dark:text-white mt-1 sm:mt-2" data-stat="total-patients">0</p>
+                        <p class="text-xs sm:text-sm font-body text-green-600 dark:text-green-400 mt-1">Date live</p>
+                            </div>
+                            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
+                                <i data-lucide="users" class="w-5 h-5 sm:w-6 sm:h-6 text-white"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-premium p-4 sm:p-6 hover-lift animate-slide-in" style="animation-delay: 0.1s;">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs sm:text-sm font-body font-medium text-gray-600 dark:text-gray-400">Programările de Astăzi</p>
+                                <p class="text-2xl sm:text-3xl font-display font-bold text-gray-900 dark:text-white mt-1 sm:mt-2" data-stat="todays-appointments">0</p>
+                                <p class="text-xs sm:text-sm font-body text-orange-600 dark:text-orange-400 mt-1" data-stat="pending-appointments">0 confirmări în așteptare</p>
+                            </div>
+                            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center">
+                                <i data-lucide="calendar-check" class="w-5 h-5 sm:w-6 sm:h-6 text-white"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-premium p-4 sm:p-6 hover-lift animate-slide-in" style="animation-delay: 0.2s;">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs sm:text-sm font-body font-medium text-gray-600 dark:text-gray-400">Clienți Noi (Luna Aceasta)</p>
+                                <p class="text-2xl sm:text-3xl font-display font-bold text-gray-900 dark:text-white mt-1 sm:mt-2" data-stat="new-patients-this-month">0</p>
+                                <p class="text-xs sm:text-sm font-body text-blue-600 dark:text-blue-400 mt-1" data-stat="new-patients-trend">pacienți noi adăugați</p>
+                            </div>
+                            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
+                                <i data-lucide="user-plus" class="w-5 h-5 sm:w-6 sm:h-6 text-white"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Main Content Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 main-content-grid">
+                    <!-- Recent Appointments -->
+                    <div class="lg:col-span-2 bg-white dark:bg-gray-800 rounded-2xl shadow-premium p-4 sm:p-6 animate-slide-in" style="animation-delay: 0.4s;">
+                        <div class="flex items-center justify-between mb-4 sm:mb-6">
+                            <h3 class="text-base sm:text-lg font-display font-semibold text-gray-900 dark:text-white">Programul de Astăzi</h3>
+                            <button onclick="viewAllAppointments()" class="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 font-body font-medium text-xs sm:text-sm">Vezi Toate</button>
+                        </div>
+                        <div class="space-y-3 sm:space-y-4" id="appointments-list">
+                            <!-- Appointments will be loaded dynamically -->
+                        </div>
+                    </div>
+
+
+            </main>
+             <!-- Footer -->
+             <footer>
+                <div class="px-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 flex justify-center items-center h-16">
+                    <p class="text-sm font-body text-gray-500 dark:text-gray-400 flex flex-wrap sm:gap-2 justify-center items-center text-center">
+                    
+                    
+                    </p>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Add Patient Modal -->
+    <div id="addPatientModal" class="tw-modal fixed inset-0 bg-[#000000d1] bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="tw-modal-dialog bg-white dark:bg-gray-800 rounded-2xl shadow-premium p-8 w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto" >
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-2xl font-display font-bold text-gray-900 dark:text-white" >Adaugă Pacient Nou</h3>
+                 <button data-modal-close class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors" >
+                    <i data-lucide="x" class="w-6 h-6 dark:text-gray-300"></i>
+                </button>
+            </div>
+            
+            <form id="addPatientForm" class="space-y-8">
+                <!-- Personal Information -->
+                <div>
+                    <h4 class="text-lg font-display font-semibold text-gray-900 dark:text-white mb-4" >Informații Personale</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 font-body" >Nume *</label>
+                            <input type="text" name="lastName" required class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent font-body bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none" >
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 font-body" >Prenume *</label>
+                            <input type="text" name="firstName" required class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent font-body bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none" >
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Information -->
+                <div>
+                    <h4 class="text-lg font-display font-semibold text-gray-900 dark:text-white mb-4" >Informații de Contact</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 font-body" >Număr de Telefon *</label>
+                            <input type="tel" name="phone" required class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent font-body bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none" >
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 font-body" >Adresă Email *</label>
+                            <input type="email" name="email" required class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent font-body bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none" >
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700" >
+                    <button type="button" data-modal-close class="px-6 py-3 border border-gray-200 dark:border-gray-700 rounded-xl font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-body" >Anulează</button>
+                    <button type="submit" class="px-6 py-3 bg-purple-600 text-white rounded-xl font-medium hover:bg-purple-700 transition-colors font-body">Adaugă Pacient</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="AddAppointmentModal" data-modal-backdrop="static"  class="tw-modal fixed inset-0 bg-[#000000d1] bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="bg-white dark:bg-gray-800 tw-modal-dialog rounded-2xl shadow-premium p-8 w-full max-w-3xl mx-4 max-h-[90vh] overflow-y-auto text-gray-900 dark:text-gray-100">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-2xl font-display font-bold">Programează Întâlnire Nouă</h3>
+                <button data-modal-close class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors" >
+                        <i data-lucide="x" class="w-6 h-6 dark:text-gray-300"></i>
+                </button>
+            </div>
+            
+            <form id="addAppointmentForm" class="space-y-6">
+                <!-- Patient Selection -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 font-body">Pacient *</label>
+                        <select name="patient" required 
+                            class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 
+                                rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 
+                                focus:ring-2 focus:ring-purple-500 focus:border-transparent font-body focus:outline-none">
+                            <option value="">Selectează Pacient</option>
+                            <option value="john-smith">John Smith - #2847</option>
+                            <option value="emily-martinez">Emily Martinez - #2846</option>
+                            <option value="michael-johnson">Michael Johnson - #2845</option>
+                            <option value="sarah-davis">Davis - #2844</option>
+                            <option value="robert-johnson">Robert Johnson - #2843</option>
+                            <option value="lisa-brown">Lisa Brown - #2842</option>
+                        </select>
+                    </div>
+                    
+                </div>
+
+                <!-- Date and Time -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 font-body">Data *</label>
+                        <input type="date" name="date" required 
+                            class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 
+                                rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 
+                                focus:ring-2 focus:ring-purple-500 focus:border-transparent font-body focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 font-body">Ora de Început *</label>
+                        <input type="time" name="startTime" required 
+                            class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 
+                                rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 
+                                focus:ring-2 focus:ring-purple-500 focus:border-transparent font-body focus:outline-none">
+                </div>
+
+                </div>
+                <!-- Appointment Details -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3 font-body">Tipul Întâlnirii *</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <label class="flex items-center space-x-3 p-3 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors">
+                                <input type="checkbox" name="appointmentTypes" value="consultation" class="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                <span class="text-sm font-medium text-gray-900 dark:text-gray-100">Consultație</span>
+                            </label>
+                            
+                            <label class="flex items-center space-x-3 p-3 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors">
+                                <input type="checkbox" name="appointmentTypes" value="follow-up" class="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                <span class="text-sm font-medium text-gray-900 dark:text-gray-100">Urmărire</span>
+                            </label>
+                            
+                            <label class="flex items-center space-x-3 p-3 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors">
+                                <input type="checkbox" name="appointmentTypes" value="physical-exam" class="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                <span class="text-sm font-medium text-gray-900 dark:text-gray-100">Examen Fizic</span>
+                            </label>
+                            
+                            <label class="flex items-center space-x-3 p-3 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors">
+                                <input type="checkbox" name="appointmentTypes" value="lab-review" class="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                <span class="text-sm font-medium text-gray-900 dark:text-gray-100">Revizuire Laborator</span>
+                            </label>
+                            
+                            <label class="flex items-center space-x-3 p-3 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors">
+                                <input type="checkbox" name="appointmentTypes" value="vaccination" class="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                <span class="text-sm font-medium text-gray-900 dark:text-gray-100">Vaccinare</span>
+                            </label>
+                            
+                            <label class="flex items-center space-x-3 p-3 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors">
+                                <input type="checkbox" name="appointmentTypes" value="surgery" class="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                <span class="text-sm font-medium text-gray-900 dark:text-gray-100">Chirurgie</span>
+                            </label>
+                            
+                            <label class="flex items-center space-x-3 p-3 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors">
+                                <input type="checkbox" name="appointmentTypes" value="therapy" class="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                <span class="text-sm font-medium text-gray-900 dark:text-gray-100">Terapie</span>
+                            </label>
+                            
+                            <label class="flex items-center space-x-3 p-3 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors">
+                                <input type="checkbox" name="appointmentTypes" value="emergency" class="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                <span class="text-sm font-medium text-gray-900 dark:text-gray-100">Urgență</span>
+                            </label>
+                        </div>
+                        <div id="appointmentTypesError" class="text-red-500 text-sm mt-2 hidden">Selectează cel puțin un tip de programare</div>
+                    </div>
+                </div>
+
+                <!-- Priority and Status -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 font-body">Status Inițial</label>
+                        <select name="status" 
+                            class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 
+                                rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 
+                                focus:ring-2 focus:ring-purple-500 focus:border-transparent font-body focus:outline-none">
+                            <option value="pending">În Așteptarea Confirmării</option>
+                            <option value="confirmed" selected>Confirmat</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Notes and Reason -->
+                
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 font-body">Note Adiționale</label>
+                    <textarea name="notes" rows="3" placeholder="Orice informație suplimentară sau instrucțiuni speciale..."
+                        class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl 
+                            bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 
+                            focus:ring-2 focus:ring-purple-500 focus:border-transparent font-body focus:outline-none"></textarea>
+                </div>
+                <!-- Footer -->
+                <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700">
+                    <button type="button" data-modal-close 
+                        class="px-6 py-3 border border-gray-200 dark:border-gray-700 rounded-xl 
+                            font-medium text-gray-700 dark:text-gray-300 
+                            hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-body">
+                        Anulează
+                    </button>
+                    <button type="submit" 
+                        class="px-6 py-3 bg-purple-600 text-white rounded-xl font-medium hover:bg-purple-700 transition-colors font-body">
+                        Programează Întâlnirea
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="createInvoiceModal" class="tw-modal fixed inset-0 bg-[#000000d1] bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="tw-modal-dialog bg-white dark:bg-gray-800 rounded-2xl shadow-premium p-8 w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto text-gray-900 dark:text-gray-100">
+            <!-- Header -->
+            <div class="flex items-center justify-between mb-6">
+            <h3 class="text-2xl font-display font-bold">Creează Factură Nouă</h3>
+             <button data-modal-close class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors" >
+                    <i data-lucide="x" class="w-6 h-6 dark:text-gray-300"></i>
+            </button>
+            </div>
+
+            <form id="createInvoiceForm" class="space-y-8">
+            <!-- Invoice Header -->
+            <div>
+                <h4 class="text-lg font-display font-semibold mb-4">Informații Factură</h4>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                    <label class="block text-sm font-medium mb-2 font-body">Numărul Facturii</label>
+                    <input type="text" name="invoiceNumber" value="#INV-2024-006" readonly class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-gray-900 font-body focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2 font-body">Data Facturii *</label>
+                    <input type="date" name="invoiceDate" required class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-transparent font-body focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2 font-body">Data Scadenței *</label>
+                    <input type="date" name="dueDate" required class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-transparent font-body focus:outline-none">
+                </div>
+                </div>
+            </div>
+
+            <!-- Patient Information -->
+            <div>
+                <h4 class="text-lg font-display font-semibold mb-4">Informații Pacient</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-medium mb-2 font-body">Pacient *</label>
+                    <select name="patient" required class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-transparent font-body focus:outline-none">
+                    <option value="">Selectează Pacient</option>
+                    <option value="john-smith">John Smith - #2847</option>
+                    <option value="emily-martinez">Emily Martinez - #2846</option>
+                    <option value="michael-johnson">Michael Johnson - #2845</option>
+                    <option value="sarah-davis">Davis - #2844</option>
+                    <option value="robert-johnson">Robert Johnson - #2843</option>
+                    <option value="lisa-brown">Lisa Brown - #2842</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2 font-body">Furnizor Asigurări</label>
+                    <input type="text" name="insuranceProvider" placeholder="ex., Blue Cross Blue Shield" class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-transparent font-body focus:outline-none">
+                </div>
+                </div>
+            </div>
+
+            <!-- Services and Items -->
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                <h4 class="text-lg font-display font-semibold">Servicii și Articole</h4>
+                <button type="button" onclick="addInvoiceItem()" class="flex items-center space-x-2 text-purple-600 hover:text-purple-700 font-medium font-body focus:outline-none">
+                    <i data-lucide="plus" class="w-4 h-4"></i>
+                    <span>Adaugă Articol</span>
+                </button>
+                </div>
+                <div id="invoiceItemsList" class="space-y-4">
+                <div class="invoice-item grid grid-cols-1 md:grid-cols-12 gap-4 p-4 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-700">
+                    <div class="md:col-span-5">
+                    <label class="block text-sm font-medium mb-2 font-body">Descrierea Serviciului/Articolului</label>
+                    <input type="text" name="itemDescription[]" placeholder="ex., Consultație Generală" class="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-transparent font-body focus:outline-none">
+                    </div>
+                    <div class="md:col-span-2">
+                    <label class="block text-sm font-medium mb-2 font-body">Cantitate</label>
+                    <input type="number" name="itemQuantity[]" value="1" min="1" class="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-transparent font-body focus:outline-none">
+                    </div>
+                    <div class="md:col-span-2">
+                    <label class="block text-sm font-medium mb-2 font-body">Preț Unitate</label>
+                    <input type="number" name="itemPrice[]" step="0.01" placeholder="0.00" class="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-transparent font-body focus:outline-none">
+                    </div>
+                    <div class="md:col-span-2">
+                    <label class="block text-sm font-medium mb-2 font-body">Total</label>
+                    <input type="text" readonly class="item-total w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-900 font-body focus:outline-none" value="$0.00">
+                    </div>
+                    <div class="md:col-span-1 flex items-end">
+                    <button type="button" onclick="removeInvoiceItem(this)" class="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors focus:outline-none">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </button>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            <!-- Invoice Totals -->
+            <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-6">
+                <div class="space-y-3">
+                <div class="flex justify-between items-center">
+                    <span class="font-medium font-body">Subtotal:</span>
+                    <span id="invoiceSubtotal" class="font-semibold font-display">$0.00</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="font-medium font-body">TVA (21%):</span>
+                    <span id="invoiceTax" class="font-semibold font-display">$0.00</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <label class="font-medium font-body">Reducere:</label>
+                    <div class="flex items-center space-x-2">
+                    <input type="number" id="discountAmount" step="0.01" placeholder="0.00" class="w-20 px-2 py-1 border border-gray-200 dark:border-gray-700 rounded text-sm font-body bg-white dark:bg-gray-900 focus:outline-none">
+                    <select id="discountType" class="px-2 py-1 border border-gray-200 dark:border-gray-700 rounded text-sm font-body bg-white dark:bg-gray-900 focus:outline-none">
+                        <option value="amount">$</option>
+                        <option value="percent">%</option>
+                    </select>
+                    </div>
+                </div>
+                <hr class="border-gray-300 dark:border-gray-600">
+                <div class="flex justify-between items-center">
+                    <span class="text-lg font-bold font-display">Total:</span>
+                    <span id="invoiceTotal" class="text-lg font-bold text-purple-600 font-display">$0.00</span>
+                </div>
+                </div>
+            </div>
+
+
+            <!-- Footer Buttons -->
+            <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700">
+                <button type="button" data-modal-close class="px-6 py-3 border border-gray-200 dark:border-gray-600 rounded-xl font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors font-body">Anulează</button>
+                <button type="button" class="px-6 py-3 border border-purple-200 text-purple-700 dark:text-purple-400 rounded-xl font-medium hover:bg-purple-50 dark:hover:bg-purple-900/40 transition-colors font-body">Salvează ca Ciornă</button>
+                <button type="submit" class="px-6 py-3 bg-purple-600 text-white rounded-xl font-medium hover:bg-purple-700 transition-colors font-body">Creează și Trimite Factura</button>
+            </div>
+            </form>
+        </div>
+    </div>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="assets/js/tailwind-modal.js"></script>
+    <script>
+        // Wait for DOM to be fully loaded before initializing
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Lucide icons after DOM is ready
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        });
+
+        // Simple API functions
+        async function apiRequest(endpoint, options = {}) {
+            try {
+                const response = await fetch(`/api${endpoint}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'same-origin',
+                    ...options
+                });
+                
+                if (response.status === 401) {
+                    window.location.href = '/';
+                    return;
+                }
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                return await response.json();
+            } catch (error) {
+                console.error('API request failed:', error);
+                return null;
+            }
+        }
+
+        // Load dashboard data
+        async function loadDashboardData() {
+            try {
+                const stats = await apiRequest('/dashboard/stats');
+                
+                if (!stats) {
+                    console.log('No stats data received, using defaults');
+                    // Set default values
+                    const totalPatientsEl = document.querySelector('[data-stat="total-patients"]');
+                    const todaysAppointmentsEl = document.querySelector('[data-stat="todays-appointments"]');
+                    const pendingAppointmentsEl = document.querySelector('[data-stat="pending-appointments"]');
+                    const newPatientsEl = document.querySelector('[data-stat="new-patients-this-month"]');
+                    const newPatientsTrendEl = document.querySelector('[data-stat="new-patients-trend"]');
+                    
+                    if (totalPatientsEl) totalPatientsEl.textContent = '0';
+                    if (todaysAppointmentsEl) todaysAppointmentsEl.textContent = '0';
+                    if (pendingAppointmentsEl) pendingAppointmentsEl.textContent = '0 confirmări în așteptare';
+                    if (newPatientsEl) newPatientsEl.textContent = '0';
+                    if (newPatientsTrendEl) newPatientsTrendEl.textContent = 'pacienți noi adăugați';
+                    return;
+                }
+                
+                // Update stats
+                const totalPatientsEl = document.querySelector('[data-stat="total-patients"]');
+                const todaysAppointmentsEl = document.querySelector('[data-stat="todays-appointments"]');
+                const pendingAppointmentsEl = document.querySelector('[data-stat="pending-appointments"]');
+                const newPatientsEl = document.querySelector('[data-stat="new-patients-this-month"]');
+                const newPatientsTrendEl = document.querySelector('[data-stat="new-patients-trend"]');
+                
+                if (totalPatientsEl) totalPatientsEl.textContent = stats.totalPatients || 0;
+                if (todaysAppointmentsEl) todaysAppointmentsEl.textContent = stats.todaysAppointments || 0;
+                if (pendingAppointmentsEl) pendingAppointmentsEl.textContent = `${stats.pendingAppointments || 0} confirmări în așteptare`;
+                
+                // Calculate new patients this month
+                const newPatientsThisMonth = stats.newPatientsThisMonth || 0;
+                if (newPatientsEl) newPatientsEl.textContent = newPatientsThisMonth;
+                if (newPatientsTrendEl) {
+                    if (newPatientsThisMonth > 0) {
+                        newPatientsTrendEl.textContent = `+${newPatientsThisMonth} pacienți noi adăugați`;
+                    } else {
+                        newPatientsTrendEl.textContent = 'niciun pacient nou adăugat';
+                    }
+                }
+                
+                // Load recent patients
+                const patients = await apiRequest('/patients');
+                const patientsList = document.getElementById('patients-list');
+                if (patientsList && patients) {
+                    patientsList.innerHTML = patients.slice(0, 5).map(patient => `
+                        <div class="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-lg">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
+                                    ${patient.firstName[0]}${patient.lastName[0]}
+                                </div>
+                                <div>
+                                    <p class="font-medium text-gray-900 dark:text-white">${patient.firstName} ${patient.lastName}</p>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">${patient.email}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                } else if (patientsList) {
+                    patientsList.innerHTML = '<p class="text-gray-500 dark:text-gray-400">Nu s-au găsit pacienți</p>';
+                }
+                
+                // Load today's appointments
+                const appointments = await apiRequest('/appointments');
+                const appointmentsList = document.getElementById('appointments-list');
+                if (appointmentsList && appointments) {
+                    const today = new Date().toISOString().split('T')[0];
+                    const todayAppointments = appointments.filter(apt => apt.date === today);
+                    appointmentsList.innerHTML = todayAppointments.map(appointment => `
+                        <div class="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-lg">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
+                                    ${appointment.startTime}
+                                </div>
+                                <div>
+                                    <p class="font-medium text-gray-900 dark:text-white">${appointment.firstName} ${appointment.lastName}</p>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">${appointment.type}</p>
+                                </div>
+                            </div>
+                            <span class="px-2 py-1 text-xs font-medium rounded-full ${appointment.status === 'confirmed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}">
+                                ${appointment.status}
+                            </span>
+                        </div>
+                    `).join('');
+                } else if (appointmentsList) {
+                    appointmentsList.innerHTML = '<p class="text-gray-500 dark:text-gray-400">Nu s-au găsit programări</p>';
+                }
+                
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+            }
+        }
+
+        // Logout function
+        window.logout = async function() {
+            try {
+                await apiRequest('/logout', { method: 'POST' });
+                window.location.href = '/login.html';
+            } catch (error) {
+                console.error('Logout error:', error);
+                window.location.href = '/login.html';
+            }
+        };
+
+        // Navigation functions
+        window.viewAllPatients = function() { window.location.href = '/patients.html'; };
+        window.viewAllAppointments = function() { window.location.href = '/appointments.html'; };
+        window.viewReports = function() { window.location.href = '/reports.html'; };
+
+        // Add patient functionality
+        async function addPatient(patientData) {
+            try {
+                const response = await apiRequest('/patients', {
+                    method: 'POST',
+                    body: JSON.stringify(patientData)
+                });
+                
+                if (response) {
+                    console.log('Patient added successfully');
+                    // Reload dashboard data
+                    loadDashboardData();
+                    // Close modal
+                    const modal = document.getElementById('addPatientModal');
+                    if (modal) {
+                        modal.classList.add('hidden');
+                    }
+                    // Reset form
+                    const form = document.getElementById('addPatientForm');
+                    if (form) {
+                        form.reset();
+                    }
+                    // Show success message
+                    alert('Pacient adăugat cu succes!');
+                }
+            } catch (error) {
+                console.error('Error adding patient:', error);
+                alert('Eroare la adăugarea pacientului!');
+            }
+        }
+
+        // Add appointment functionality
+        async function addAppointment(appointmentData) {
+            try {
+                const response = await apiRequest('/appointments', {
+                    method: 'POST',
+                    body: JSON.stringify(appointmentData)
+                });
+                
+                if (response) {
+                    console.log('Appointment added successfully');
+                    // Reload dashboard data
+                    loadDashboardData();
+                    // Close modal
+                    const modal = document.getElementById('AddAppointmentModal');
+                    if (modal) {
+                        modal.classList.add('hidden');
+                    }
+                    // Reset form
+                    const form = document.getElementById('addAppointmentForm');
+                    if (form) {
+                        form.reset();
+                    }
+                    // Show success message
+                    alert('Programare adăugată cu succes!');
+                }
+            } catch (error) {
+                console.error('Error adding appointment:', error);
+                alert('Eroare la adăugarea programării!');
+            }
+        }
+
+        // Load patients for dropdown
+        async function loadPatientsForDropdown() {
+            try {
+                const patients = await apiRequest('/patients');
+                const patientSelect = document.querySelector('select[name="patient"]');
+                
+                if (patientSelect && patients) {
+                    // Clear existing options except the first one
+                    patientSelect.innerHTML = '<option value="">Selectează Pacient</option>';
+                    
+                    // Add patients from database
+                    patients.forEach(patient => {
+                        const option = document.createElement('option');
+                        option.value = patient.id || patient._id;
+                        option.textContent = `${patient.firstName} ${patient.lastName} - #${patient.id || patient._id}`;
+                        patientSelect.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading patients for dropdown:', error);
+            }
+        }
+
+        // Handle form submissions
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle add patient form submission
+            const addPatientForm = document.getElementById('addPatientForm');
+            if (addPatientForm) {
+                addPatientForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const formData = new FormData(addPatientForm);
+                    const patientData = {
+                        firstName: formData.get('firstName'),
+                        lastName: formData.get('lastName'),
+                        phone: formData.get('phone'),
+                        email: formData.get('email')
+                    };
+                    
+                    addPatient(patientData);
+                });
+            }
+
+            // Handle add appointment form submission
+            const addAppointmentForm = document.getElementById('addAppointmentForm');
+            if (addAppointmentForm) {
+                addAppointmentForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const formData = new FormData(addAppointmentForm);
+                    const selectedPatientId = formData.get('patient');
+                    
+                    // Get patient details from the selected option
+                    const patientSelect = document.querySelector('select[name="patient"]');
+                    const selectedOption = patientSelect.options[patientSelect.selectedIndex];
+                    const patientName = selectedOption.textContent.split(' - ')[0]; // Get name part
+                    const [firstName, lastName] = patientName.split(' ');
+                    
+                    // Get selected appointment types
+                    const selectedTypes = Array.from(document.querySelectorAll('input[name="appointmentTypes"]:checked'))
+                        .map(checkbox => checkbox.value);
+                    
+                    if (selectedTypes.length === 0) {
+                        document.getElementById('appointmentTypesError').classList.remove('hidden');
+                        return;
+                    } else {
+                        document.getElementById('appointmentTypesError').classList.add('hidden');
+                    }
+                    
+                    const appointmentData = {
+                        patientId: selectedPatientId,
+                        firstName: firstName || '',
+                        lastName: lastName || '',
+                        date: formData.get('date'),
+                        startTime: formData.get('startTime'),
+                        type: selectedTypes.join(', '), // Join multiple types with comma
+                        status: formData.get('status') || 'pending',
+                        notes: formData.get('notes') || ''
+                    };
+                    
+                    addAppointment(appointmentData);
+                });
+            }
+
+            // Load patients for dropdown when appointment modal opens
+            const appointmentModal = document.getElementById('AddAppointmentModal');
+            if (appointmentModal) {
+                appointmentModal.addEventListener('show', function() {
+                    loadPatientsForDropdown();
+                    resetAppointmentTypes();
+                });
+            }
+            
+            // Function to reset appointment types checkboxes
+            function resetAppointmentTypes() {
+                const checkboxes = document.querySelectorAll('input[name="appointmentTypes"]');
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                document.getElementById('appointmentTypesError').classList.add('hidden');
+            }
+        });
+
+        // Check authentication status
+        async function checkAuthStatus() {
+            try {
+                const response = await fetch('/api/auth/status', {
+                    credentials: 'same-origin'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.authenticated) {
+                        // User is authenticated, load dashboard data
+                        loadDashboardData();
+                    } else {
+                        // User is not authenticated, redirect to login
+                        window.location.href = '/login.html';
+                    }
+                } else {
+                    // Error checking auth status, redirect to login
+                    window.location.href = '/login.html';
+                }
+            } catch (error) {
+                console.error('Error checking auth status:', error);
+                // Error occurred, redirect to login
+                window.location.href = '/login.html';
+            }
+        }
+
+        // Load data when page loads
+        document.addEventListener('DOMContentLoaded', checkAuthStatus);
+    </script>
+    <script src="assets/js/script.js"></script>
+</body>
+</html>

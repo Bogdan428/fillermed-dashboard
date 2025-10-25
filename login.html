@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="./assets/css/output.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="h-full transition-colors duration-300">
+    <!-- Theme Toggle -->
+    <div class="absolute top-4 right-4">
+        <button id="theme-toggle" class="p-2 rounded-lg bg-white dark:bg-gray-800 shadow-md hover:shadow-lg transition-all duration-200">
+            <i data-lucide="sun" class="w-5 h-5 hidden dark:block text-gray-600 dark:text-gray-300"></i>
+            <i data-lucide="moon" class="w-5 h-5 block dark:hidden text-gray-600 dark:text-gray-300"></i>
+        </button>
+    </div>
+
+    <div class="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8">
+        <div class="sm:mx-auto sm:w-full sm:max-w-md">
+            <div class="flex justify-center">
+                <img src="assets/images/logo.png" alt="FillerMed Logo" class="w-24 h-24 object-contain">
+            </div>
+        </div>
+
+        <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+            <div class="bg-white dark:bg-gray-800 py-8 px-4 shadow-lg sm:rounded-lg sm:px-10 transition-colors duration-300">
+                <form id="loginForm" class="space-y-6">
+                    <div>
+                        <label for="username" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Username
+                        </label>
+                        <div class="mt-1">
+                            <input id="username" name="username" type="text" autocomplete="username" required
+                                class="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent font-body bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none"
+                                placeholder="Enter username">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Password
+                        </label>
+                        <div class="mt-1">
+                            <input id="password" name="password" type="password" autocomplete="current-password" required
+                                class="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent font-body bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none"
+                                placeholder="Enter password">
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <input id="remember-me" name="remember-me" type="checkbox"
+                                class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                            <label for="remember-me" class="ml-2 block text-sm text-gray-900 dark:text-gray-300">
+                                Remember me
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <button type="submit"
+                            class="flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition-colors duration-200">
+                            Sign in
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="assets/js/tailwind-modal.js"></script>
+    <script src="assets/js/script.js"></script>
+    <script>
+        // Login functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Login form functionality
+            const loginForm = document.getElementById('loginForm');
+            if (loginForm) {
+                loginForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    const username = document.getElementById('username').value;
+                    const password = document.getElementById('password').value;
+                    
+                    try {
+                        const response = await fetch('/api/login', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ username, password })
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (response.ok) {
+                            // Login successful, redirect to dashboard
+                            window.location.href = '/index.html';
+                        } else {
+                            // Show error message
+                            alert('Login failed: ' + data.error);
+                        }
+                    } catch (error) {
+                        alert('Login failed: ' + error.message);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

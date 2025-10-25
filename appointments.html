@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="ro" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programări</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="./assets/css/output.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: #e5e7eb;
+            border-radius: 8px;
+            overflow: hidden;
+            padding: 4px;
+        }
+        
+        .calendar-grid .calendar-header {
+            background: #f3f4f6;
+            padding: 4px 2px;
+            text-align: center;
+            font-size: 10px;
+            font-weight: 600;
+            color: #6b7280;
+        }
+        
+        .calendar-grid .calendar-day {
+            background: white;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.2s;
+            position: relative;
+        }
+        
+        .calendar-grid .calendar-day:hover {
+            background: #f3f4f6;
+        }
+        
+        .calendar-grid .calendar-day.today {
+            background: #dbeafe;
+            color: #1d4ed8;
+            font-weight: 600;
+        }
+        
+        .calendar-grid .calendar-day.has-appointments {
+            color: #059669;
+        }
+        
+        .calendar-grid .calendar-day.selected {
+            background: #e9d5ff;
+            color: #7c3aed;
+        }
+        
+        .calendar-grid .calendar-day .appointment-dot {
+            position: absolute;
+            top: 1px;
+            right: 1px;
+            width: 4px;
+            height: 4px;
+            background: #10b981;
+            border-radius: 50%;
+        }
+        
+        .dark .calendar-grid {
+            background: #374151;
+        }
+        
+        .dark .calendar-grid .calendar-header {
+            background: #1f2937;
+            color: #9ca3af;
+        }
+        
+        .dark .calendar-grid .calendar-day {
+            background: #111827;
+            color: #d1d5db;
+        }
+        
+        .dark .calendar-grid .calendar-day:hover {
+            background: #1f2937;
+        }
+        
+        .dark .calendar-grid .calendar-day.today {
+            background: #1e3a8a;
+            color: #93c5fd;
+        }
+        
+        .dark .calendar-grid .calendar-day.has-appointments {
+            color: #34d399;
+        }
+        
+        .dark .calendar-grid .calendar-day.selected {
+            background: #581c87;
+            color: #c084fc;
+        }
+    </style>
+</head>
+<body class="h-full transition-colors duration-300">
+   <div class="flex h-screen">
+        <!-- Sidebar Overlay (for mobile) -->
+        <div id="sidebar-overlay" class=""></div>
+
+        <!-- Sophisticated Sidebar -->
+        <div id="sidebar" class="w-72 bg-white dark:bg-gray-800 shadow-premium border-r border-gray-200 dark:border-gray-700">
+            <div class="flex flex-col h-full">
+                <!-- Logo and Close Button Section -->
+                <div class="p-6 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center h-[85px]">
+                    <div>
+                         <a href="index.html" class="flex items-center justify-center"> 
+                             <div class="w-32 h-32 flex items-center justify-center bg-transparent">
+                                 <img src="assets/images/logo.png" alt="FillerMed Logo" class="w-28 h-28 object-contain">
+                             </div>
+                         </a>
+                    </div>
+                    <button id="sidebar-close" class="lg:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <i data-lucide="x" class="w-5 h-5 dark:text-gray-300"></i>
+                    </button>
+                </div>
+
+                <!-- Navigation -->
+
+                 <nav class="flex-1 overflow-y-auto py-6 px-4 custom-scrollbar">
+                    <ul class="space-y-2">
+                        <li>
+                            <a href="index.html" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white font-medium transition-all duration-200">
+                                <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+                                <span>Panou Principal</span>
+                            </a>
+                        </li>
+                        
+                        <li>
+                            <a href="patients.html" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white font-medium transition-all duration-200">
+                                <i data-lucide="users" class="w-5 h-5"></i>
+                                <span>Clienți</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="appointments.html" class="active flex items-center space-x-3 px-4 py-3 rounded-xl bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/30 dark:to-purple-900/30 text-purple-700 dark:text-primary-300 font-medium shadow-sm transition-all">
+                                <i data-lucide="calendar" class="w-5 h-5"></i>
+                                <span>Programări</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="reports.html" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white font-medium transition-all duration-200">
+                                <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+                                <span>Rapoarte</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                <!-- User Profile -->
+                <div class="border-t border-gray-200 dark:border-gray-700 h-20 flex items-center p-4">
+                    <div class="flex items-center space-x-3 p-3 rounded-xl bg-gray-50 dark:bg-gray-700 w-full">
+                        <div class="w-10 h-10 bg-gradient-to-br from-primary-600 to-primary-700 rounded-full flex items-center justify-center">
+                            <span class="text-white font-semibold text-sm">R</span>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-sm font-display font-semibold text-gray-900 dark:text-white">Recepționeră</p>
+                            <p class="text-xs font-body text-gray-500 dark:text-gray-400">Recepție</p>
+                        </div>
+                        <a href="#"><i data-lucide="log-out" class="w-4 h-4 text-gray-400"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Header -->
+            <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 px-4 sm:px-6 py-4 h-[85px]">
+                <div class="flex items-center justify-between flex-wrap gap-4 header-content">
+                    <div class="flex items-center flex-1 min-w-0">
+                        <!-- Hamburger Menu Button (visible on mobile/tablet) -->
+                        <button id="sidebar-toggle" class="hamburger-btn mr-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                            <i data-lucide="menu" class="w-5 h-5 dark:text-gray-300"></i>
+                        </button>
+                        <div class="min-w-0">
+                            <h2 class="text-xl sm:text-2xl font-display font-bold text-gray-900 dark:text-white truncate">Programări</h2>
+                            <p class="text-xs sm:text-sm font-body text-gray-500 dark:text-gray-400 mt-1 truncate">Gestionează programările pacienților.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2 sm:space-x-3 header-actions flex-shrink-0">
+                        <div class="relative search-container hidden sm:block">
+                            <input type="text" placeholder="Caută..." class="w-40 md:w-48 lg:w-60 px-4 py-2 pl-10 pr-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent font-body bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none">
+                            <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-3 top-3"></i>
+                        </div>
+                        <button id="mobile-search-btn" class="sm:hidden p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                            <i data-lucide="search" class="w-5 h-5"></i>
+                        </button>
+                        <!-- Theme toggle button -->
+                        <button id="theme-toggle" class="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                            <i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i>
+                            <i data-lucide="moon" class="w-5 h-5 block dark:hidden"></i>
+                        </button>
+                        
+                        <!-- Settings Dropdown -->
+                        <div class="relative">
+                            <button id="settings-btn" class="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                                <i data-lucide="settings" class="w-5 h-5"></i>
+                            </button>
+                            
+                            <!-- Settings Dropdown Menu -->
+                            <div id="settings-dropdown" class="hidden absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 z-50 py-2 glass-effect">
+                                <div class="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
+                                    <h3 class="font-display font-semibold text-gray-900 dark:text-white">Setări</h3>
+                                </div>
+                                <div class="px-4 py-2 border-t border-gray-200 dark:border-gray-700">
+                                    <button class="w-full flex items-center justify-center px-4 py-2 bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-lg transition-colors">
+                                        <i data-lucide="log-out" class="w-4 h-4 mr-2"></i>
+                                        Deconectare
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Mobile Search Bar (hidden by default) -->
+                <div id="mobile-search-container" class="hidden bg-white absolute left-0 w-full right-0 px-4 pb-2 top-[75px] z-[999]">
+                    <div class="relative">
+                        <input type="search" placeholder="Caută..."
+                            class="w-full px-4 py-2 pl-10 pr-4 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent font-body bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none">
+                        <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-3 top-3"></i>
+                    </div>
+                </div>
+            </header>
+
+         <!-- Appointments Content -->
+        <main class="flex-1 overflow-y-auto p-4 sm:p-6 bg-gray-50 dark:bg-gray-900">
+            <!-- Calendar Header -->
+            <div class="mb-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <!-- Search Bar -->
+                    <div class="relative">
+                        <input type="text" id="appointmentSearch" placeholder="Caută programări..." class="w-full sm:w-80 px-4 py-2 pl-10 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent font-body bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none">
+                        <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    </div>
+                    
+                    <!-- Add Appointment Button -->
+                    <button data-modal-target="AddAppointmentModal" class="bg-purple-600 text-white px-4 py-2 rounded-xl hover:bg-purple-700 transition-colors flex items-center space-x-2 font-body font-medium">
+                        <i data-lucide="plus" class="w-4 h-4"></i>
+                        <span class="hidden sm:inline">Programare Nouă</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Calendar and Appointments Layout -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Calendar Section (Center) -->
+                <div class="lg:col-span-2">
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700">
+                        <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-lg font-display font-semibold text-gray-900 dark:text-white">Calendar Programări</h3>
+                                <div class="flex items-center space-x-2">
+                                    <button id="prevMonth" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
+                                        <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                                    </button>
+                                    <span id="currentMonth" class="text-sm font-medium text-gray-700 dark:text-gray-300">Ianuarie 2025</span>
+                                    <button id="nextMonth" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
+                                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-2">
+                            <div id="calendar" class="calendar-grid">
+                                <!-- Calendar will be generated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Appointments Display (Right Side) -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700">
+                        <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                            <div class="flex items-center justify-between">
+                                <h3 id="appointmentsTitle" class="text-lg font-display font-semibold text-gray-900 dark:text-white">Programul de Astăzi</h3>
+                            </div>
+                        </div>
+                        
+                        <div class="p-6 space-y-4">
+                            <!-- Appointments will be loaded here by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+         <!-- Footer -->
+            <footer>
+                <div class="px-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 flex justify-center items-center h-16">
+                    <p class="text-sm font-body text-gray-500 dark:text-gray-400 flex flex-wrap sm:gap-2 justify-center items-center text-center">
+                    
+                    
+                    </p>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+<div id="AddAppointmentModal" data-modal-backdrop="static" 
+    class="tw-modal fixed inset-0 bg-[#000000d1] bg-opacity-50 hidden flex items-center justify-center z-50">
+    <div class="bg-white dark:bg-gray-800 tw-modal-dialog rounded-2xl shadow-premium p-8 w-full max-w-3xl mx-4 max-h-[90vh] overflow-y-auto text-gray-900 dark:text-gray-100">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-2xl font-display font-bold">Programează Întâlnire Nouă</h3>
+             <button data-modal-close class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors" >
+                    <i data-lucide="x" class="w-6 h-6 dark:text-gray-300"></i>
+            </button>
+        </div>
+        
+        <form id="addAppointmentForm" class="space-y-6">
+            <!-- Selectare Pacient -->
+            <div class="grid grid-cols-1 gap-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 font-body">Pacient *</label>
+                    <select name="patient" id="patientSelect" required 
+                        class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 
+                               rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 
+                               focus:ring-2 focus:ring-purple-500 focus:border-transparent font-body focus:outline-none">
+                        <option value="">Selectează pacient...</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Dată și Oră -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 font-body">Dată *</label>
+                    <input type="date" name="date" required 
+                        class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 
+                               rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 
+                               focus:ring-2 focus:ring-purple-500 focus:border-transparent font-body focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 font-body">Ora Început *</label>
+                    <input type="time" name="startTime" step="60" required 
+                        class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 
+                               rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 
+                               focus:ring-2 focus:ring-purple-500 focus:border-transparent font-body focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 font-body">Durată</label>
+                    <select name="duration" 
+                        class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 
+                               rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 
+                               focus:ring-2 focus:ring-purple-500 focus:border-transparent font-body focus:outline-none">
+                        <option value="15">15 minute</option>
+                        <option value="30" selected>30 minute</option>
+                        <option value="45">45 minute</option>
+                        <option value="60">1 oră</option>
+                        <option value="90">1.5 ore</option>
+                        <option value="120">2 ore</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Detalii Programare -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3 font-body">Tip programare *</label>
+                    <div class="grid grid-cols-1 gap-3">
+                        <label class="flex items-center space-x-3 p-3 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors">
+                            <input type="checkbox" name="appointmentTypes" value="acid-hialuronic" class="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                            <span class="text-sm font-medium text-gray-900 dark:text-gray-100">Acid hialuronic</span>
+                        </label>
+                        
+                        <label class="flex items-center space-x-3 p-3 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors">
+                            <input type="checkbox" name="appointmentTypes" value="botox" class="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                            <span class="text-sm font-medium text-gray-900 dark:text-gray-100">Botox</span>
+                        </label>
+                        
+                        <label class="flex items-center space-x-3 p-3 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors">
+                            <input type="checkbox" name="appointmentTypes" value="riduri" class="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                            <span class="text-sm font-medium text-gray-900 dark:text-gray-100">Riduri</span>
+                        </label>
+                    </div>
+                    <div id="appointmentTypesError" class="text-red-500 text-sm mt-2 hidden">Selectează cel puțin un tip de programare</div>
+                </div>
+            </div>
+
+            <!-- Status -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 font-body">Status Inițial</label>
+                <select name="status" 
+                    class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 
+                           rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 
+                           focus:ring-2 focus:ring-purple-500 focus:border-transparent font-body focus:outline-none">
+                    <option value="pending">În Așteptare</option>
+                    <option value="confirmed" selected>Confirmat</option>
+                </select>
+            </div>
+
+            <!-- Notes -->
+            <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 font-body">Note Adiționale</label>
+                <textarea name="notes" rows="3" placeholder="Orice informație suplimentară sau instrucțiuni speciale..."
+                    class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl 
+                           bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 
+                           focus:ring-2 focus:ring-purple-500 focus:border-transparent font-body focus:outline-none"></textarea>
+            </div>
+
+            <!-- Setări Notificări -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3 font-body">Setări Notificări</label>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-3">
+                        <input type="checkbox" name="smsReminder" 
+                            class="w-4 h-4 text-purple-600 border-gray-300 dark:border-gray-600 rounded focus:ring-purple-500 focus:outline-none">
+                        <span class="text-sm text-gray-700 dark:text-gray-300 font-body">Trimite memento prin SMS pacientului</span>
+                    </label>
+                    
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700">
+                <button type="button" data-modal-close 
+                    class="px-6 py-3 border border-gray-200 dark:border-gray-700 rounded-xl 
+                           font-medium text-gray-700 dark:text-gray-300 
+                           hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-body">
+                    Anulează
+                </button>
+                <button type="submit" 
+                    class="px-6 py-3 bg-purple-600 text-white rounded-xl font-medium hover:bg-purple-700 transition-colors font-body">
+                    Programează Întâlnirea
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+    <script>
+        // Simple API functions
+        async function apiRequest(endpoint, options = {}) {
+            try {
+                const response = await fetch(`/api${endpoint}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'same-origin',
+                    ...options
+                });
+                
+                if (response.status === 401) {
+                    window.location.href = '/';
+                    return;
+                }
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                return await response.json();
+            } catch (error) {
+                console.error('API request failed:', error);
+                return null;
+            }
+        }
+
+        // Load appointments
+        async function loadAppointments() {
+            try {
+                // Load today's appointments by default
+                const today = new Date().toISOString().split('T')[0];
+                await loadAppointmentsForDate(today);
+                
+            } catch (error) {
+                console.error('Error loading appointments:', error);
+            }
+        }
+
+        // Add appointment functionality
+        async function addAppointment(appointmentData) {
+            try {
+                const response = await apiRequest('/appointments', {
+                    method: 'POST',
+                    body: JSON.stringify(appointmentData)
+                });
+                
+                if (response) {
+                    console.log('Appointment added successfully');
+                    // Reload appointments list
+                    loadAppointments();
+                    // Reload patients dropdown
+                    loadPatientsForDropdown();
+                    // Close modal
+                    const modal = document.getElementById('addAppointmentModal');
+                    if (modal) {
+                        modal.classList.add('hidden');
+                    }
+                    // Reset form
+                    const form = document.getElementById('addAppointmentForm');
+                    if (form) {
+                        form.reset();
+                        resetAppointmentTypes();
+                    }
+                    // Show success message
+                    alert('Programare adăugată cu succes!');
+                }
+            } catch (error) {
+                console.error('Error adding appointment:', error);
+                alert('Eroare la adăugarea programării!');
+            }
+        }
+
+        // Handle add appointment form submission
+        document.addEventListener('DOMContentLoaded', function() {
+            const addAppointmentForm = document.getElementById('addAppointmentForm');
+            if (addAppointmentForm) {
+                addAppointmentForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const formData = new FormData(addAppointmentForm);
+                    const selectedPatientId = formData.get('patient');
+                    
+                    // Get patient details from the selected option
+                    const patientSelect = document.getElementById('patientSelect');
+                    const selectedOption = patientSelect.options[patientSelect.selectedIndex];
+                    const patientName = selectedOption.textContent.split(' - ')[0]; // Get name part
+                    const [firstName, lastName] = patientName.split(' ');
+                    
+                    // Get selected appointment types
+                    const selectedTypes = Array.from(document.querySelectorAll('input[name="appointmentTypes"]:checked'))
+                        .map(checkbox => checkbox.value);
+                    
+                    if (selectedTypes.length === 0) {
+                        document.getElementById('appointmentTypesError').classList.remove('hidden');
+                        return;
+                    } else {
+                        document.getElementById('appointmentTypesError').classList.add('hidden');
+                    }
+                    
+                    const appointmentData = {
+                        patientId: selectedPatientId,
+                        firstName: firstName || '',
+                        lastName: lastName || '',
+                        date: formData.get('date'),
+                        startTime: formData.get('startTime'),
+                        type: selectedTypes.join(', '), // Join multiple types with comma
+                        status: formData.get('status') || 'pending'
+                    };
+                    
+                    addAppointment(appointmentData);
+                });
+            }
+        });
+
+        // Search functionality for appointments
+        function setupAppointmentSearch() {
+            const searchInput = document.getElementById('appointmentSearch');
+            if (searchInput) {
+                searchInput.addEventListener('input', function(e) {
+                    const searchTerm = e.target.value.toLowerCase();
+                    const appointmentCards = document.querySelectorAll('#appointments-list > div');
+                    
+                    appointmentCards.forEach(card => {
+                        const patientName = card.querySelector('h3').textContent.toLowerCase();
+                        
+                        if (patientName.includes(searchTerm)) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            }
+        }
+
+        // Load patients for dropdown
+        async function loadPatientsForDropdown() {
+            try {
+                const patients = await apiRequest('/patients');
+                const patientSelect = document.getElementById('patientSelect');
+                
+                if (patientSelect && patients) {
+                    // Clear existing options except the first one
+                    patientSelect.innerHTML = '<option value="">Selectează pacient...</option>';
+                    
+                    // Add patients from database
+                    patients.forEach(patient => {
+                        const option = document.createElement('option');
+                        option.value = patient.id;
+                        option.textContent = `${patient.firstName} ${patient.lastName} - ${patient.email}`;
+                        patientSelect.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading patients for dropdown:', error);
+            }
+        }
+        
+        // Function to reset appointment types checkboxes
+        function resetAppointmentTypes() {
+            const checkboxes = document.querySelectorAll('input[name="appointmentTypes"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            document.getElementById('appointmentTypesError').classList.add('hidden');
+        }
+
+        // Calendar functionality
+        let currentDate = new Date();
+        let selectedDate = null;
+        let appointments = [];
+
+        function generateCalendar() {
+            const calendar = document.getElementById('calendar');
+            const currentMonth = document.getElementById('currentMonth');
+            
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            
+            // Update month display
+            const monthNames = ['Ianuarie', 'Februarie', 'Martie', 'Aprilie', 'Mai', 'Iunie', 
+                              'Iulie', 'August', 'Septembrie', 'Octombrie', 'Noiembrie', 'Decembrie'];
+            currentMonth.textContent = `${monthNames[month]} ${year}`;
+            
+            // Get first day of month and number of days
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const daysInMonth = lastDay.getDate();
+            // Convert Sunday (0) to Monday (0) system
+            const startingDayOfWeek = (firstDay.getDay() + 6) % 7;
+            
+            // Create ultra-compact calendar using custom CSS
+            let calendarHTML = `
+                <!-- Header row -->
+                <div class="calendar-header">L</div>
+                <div class="calendar-header">M</div>
+                <div class="calendar-header">M</div>
+                <div class="calendar-header">J</div>
+                <div class="calendar-header">V</div>
+                <div class="calendar-header">S</div>
+                <div class="calendar-header">D</div>
+            `;
+            
+            // Add empty cells for days before month starts
+            for (let i = 0; i < startingDayOfWeek; i++) {
+                calendarHTML += `<div class="calendar-day"></div>`;
+            }
+            
+            // Add days of month - ultra compact
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const isToday = dateStr === new Date().toISOString().split('T')[0];
+                
+                calendarHTML += `
+                    <div class="calendar-day ${isToday ? 'today' : ''}" 
+                         onclick="selectDate('${dateStr}')">
+                        ${day}
+                    </div>
+                `;
+            }
+            
+            calendar.innerHTML = calendarHTML;
+        }
+
+        function selectDate(dateStr) {
+            selectedDate = dateStr;
+            loadAppointmentsForDate(dateStr);
+            
+            // Update visual selection
+            document.querySelectorAll('#calendar .calendar-day').forEach(cell => {
+                cell.classList.remove('selected');
+            });
+            event.target.closest('.calendar-day').classList.add('selected');
+        }
+
+        async function loadAppointmentsForDate(dateStr) {
+            try {
+                // Update title based on selected date
+                const titleElement = document.getElementById('appointmentsTitle');
+                const selectedDate = new Date(dateStr);
+                const today = new Date();
+                const yesterday = new Date(today);
+                yesterday.setDate(yesterday.getDate() - 1);
+                
+                // Format date for display
+                const dateOptions = { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                };
+                const formattedDate = selectedDate.toLocaleDateString('ro-RO', dateOptions);
+                
+                if (selectedDate.toDateString() === today.toDateString()) {
+                    titleElement.textContent = 'Programul de Astăzi';
+                } else if (selectedDate.toDateString() === yesterday.toDateString()) {
+                    titleElement.textContent = 'Programul de Ieri';
+                } else if (selectedDate < today) {
+                    titleElement.textContent = `Programul din ${formattedDate}`;
+                } else {
+                    titleElement.textContent = `Programul din ${formattedDate}`;
+                }
+                
+                // Load appointments from server for the selected date
+                const response = await fetch(`/api/appointments/date/${dateStr}`);
+                const dayAppointments = response.ok ? await response.json() : [];
+                
+                // Update the appointments display
+                const appointmentsContainer = document.querySelector('.p-6.space-y-4');
+                if (appointmentsContainer) {
+                    if (dayAppointments.length === 0) {
+                        appointmentsContainer.innerHTML = '<p class="text-gray-500 dark:text-gray-400 text-center py-8">Nu există programări pentru această dată</p>';
+                    } else {
+                        appointmentsContainer.innerHTML = dayAppointments.map(apt => {
+                            const statusColors = {
+                                'pending': 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300',
+                                'confirmed': 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300',
+                                'cancelled': 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
+                            };
+                            const statusText = {
+                                'pending': 'În Așteptare',
+                                'confirmed': 'Confirmat',
+                                'cancelled': 'Anulat'
+                            };
+                            
+                            return `
+                            <div class="appointment-card flex items-start space-x-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
+                                <div class="appointment-time text-sm font-medium text-neutral-600 dark:text-blue-200 w-16">${apt.startTime || '09:00'}</div>
+                                <div class="flex-1">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <h4 class="appointment-title font-semibold text-neutral-800 dark:text-white">${apt.patientName || apt.firstName + ' ' + apt.lastName || 'Nume pacient'}</h4>
+                                        <span class="status-badge px-2 py-1 ${statusColors[apt.status] || statusColors.confirmed} text-xs font-medium rounded-full">${statusText[apt.status] || 'Confirmat'}</span>
+                                    </div>
+                                    <p class="appointment-details text-sm text-neutral-600 dark:text-blue-200">${apt.type || 'Consultație'}</p>
+                                    <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                        <p>Data: ${apt.date || dateStr}</p>
+                                        <p>Ora: ${apt.startTime || 'N/A'}</p>
+                                        <p>Detalii: ${apt.reason || apt.notes || 'Fără detalii'}</p>
+                                    </div>
+                                    <div class="flex items-center space-x-2 mt-3">
+                                        <button onclick="showAppointmentDetails('${apt.id || apt._id}')" class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-sm font-medium">Vezi Detalii</button>
+                                        ${apt.status === 'pending' ? `
+                                            <button onclick="confirmAppointment('${apt.id || apt._id}')" class="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 text-sm font-medium">Confirmă</button>
+                                            <button onclick="openRescheduleModal('${apt.id || apt._id}')" class="text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 text-sm font-medium">Reprogramează</button>
+                                            <button onclick="cancelAppointment('${apt.id || apt._id}')" class="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-sm font-medium">Anulează</button>
+                                        ` : apt.status === 'confirmed' ? `
+                                            <button onclick="openRescheduleModal('${apt.id || apt._id}')" class="text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 text-sm font-medium">Reprogramează</button>
+                                            <button onclick="cancelAppointment('${apt.id || apt._id}')" class="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-sm font-medium">Anulează</button>
+                                        ` : ''}
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        }).join('');
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading appointments for date:', error);
+                const appointmentsContainer = document.querySelector('.p-6.space-y-4');
+                if (appointmentsContainer) {
+                    appointmentsContainer.innerHTML = '<p class="text-red-500 dark:text-red-400 text-center py-8">Eroare la încărcarea programărilor</p>';
+                }
+            }
+        }
+
+        // Global appointment details and actions
+        window.showAppointmentDetails = async function(appointmentId) {
+            try {
+                const response = await fetch(`/api/appointments/${appointmentId}`);
+                if (response.ok) {
+                    const appointment = await response.json();
+                    
+                    // Create modal content
+                    const modalContent = `
+                        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                            <div class="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4">
+                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Detalii Programare</h3>
+                                <div class="space-y-3">
+                                    <p><strong>Pacient:</strong> ${appointment.patientName || appointment.firstName + ' ' + appointment.lastName}</p>
+                                    <p><strong>Data:</strong> ${appointment.date}</p>
+                                    <p><strong>Ora:</strong> ${appointment.startTime}</p>
+                                    <p><strong>Tip:</strong> ${appointment.type}</p>
+                                    <p><strong>Status:</strong> ${appointment.status}</p>
+                                    <p><strong>Detalii:</strong> ${appointment.reason || appointment.notes || 'Fără detalii'}</p>
+                                </div>
+                                <div class="flex justify-end space-x-2 mt-6">
+                                    <button onclick="closeModal()" class="px-4 py-2 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg">Închide</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    document.body.insertAdjacentHTML('beforeend', modalContent);
+                }
+            } catch (error) {
+                console.error('Error loading appointment details:', error);
+                alert('Eroare la încărcarea detaliilor programării');
+            }
+        };
+
+        window.closeModal = function() {
+            const modal = document.querySelector('.fixed.inset-0');
+            if (modal) {
+                modal.remove();
+            }
+        };
+
+        // Month navigation
+        document.getElementById('prevMonth').addEventListener('click', function() {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            generateCalendar();
+        });
+
+        document.getElementById('nextMonth').addEventListener('click', function() {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            generateCalendar();
+        });
+
+        // Check authentication status
+        async function checkAuthStatus() {
+            try {
+                const response = await fetch('/api/auth/status', {
+                    credentials: 'same-origin'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.authenticated) {
+                        // User is authenticated, load page data
+            loadAppointments();
+            loadPatientsForDropdown();
+            setupAppointmentSearch();
+            generateCalendar();
+                    } else {
+                        // User is not authenticated, redirect to login
+                        window.location.href = '/login.html';
+                    }
+                } else {
+                    // Error checking auth status, redirect to login
+                    window.location.href = '/login.html';
+                }
+            } catch (error) {
+                console.error('Error checking auth status:', error);
+                // Error occurred, redirect to login
+                window.location.href = '/login.html';
+            }
+        }
+
+        // Global functions for appointment actions
+        window.confirmAppointment = async function(appointmentId) {
+            console.log('confirmAppointment called with ID:', appointmentId);
+            if (!confirm('Sigur doriți să confirmați această programare?')) {
+                return;
+            }
+            
+            try {
+                console.log('Sending confirm request...');
+                const response = await apiRequest(`/appointments/${appointmentId}/confirm`, {
+                    method: 'PUT'
+                });
+                
+                console.log('Confirm response:', response);
+                if (response) {
+                    alert('Programarea a fost confirmată cu succes!');
+                    // Reload appointments
+                    const today = new Date().toISOString().split('T')[0];
+                    loadAppointmentsForDate(today);
+                }
+            } catch (error) {
+                console.error('Error confirming appointment:', error);
+                alert('Eroare la confirmarea programării!');
+            }
+        };
+
+        window.cancelAppointment = async function(appointmentId) {
+            console.log('cancelAppointment called with ID:', appointmentId);
+            if (!confirm('Sigur doriți să anulați această programare?')) {
+                return;
+            }
+            
+            try {
+                console.log('Sending cancel request...');
+                const response = await apiRequest(`/appointments/${appointmentId}/cancel`, {
+                    method: 'PUT'
+                });
+                
+                console.log('Cancel response:', response);
+                if (response) {
+                    alert('Programarea a fost anulată cu succes!');
+                    // Reload appointments
+                    const today = new Date().toISOString().split('T')[0];
+                    loadAppointmentsForDate(today);
+                }
+            } catch (error) {
+                console.error('Error cancelling appointment:', error);
+                alert('Eroare la anularea programării!');
+            }
+        };
+
+        window.openRescheduleModal = async function(appointmentId) {
+            console.log('openRescheduleModal called with ID:', appointmentId);
+            try {
+                // Get appointment details
+                console.log('Fetching appointment details...');
+                const response = await fetch(`/api/appointments/${appointmentId}`);
+                if (response.ok) {
+                    const appointment = await response.json();
+                    console.log('Appointment details:', appointment);
+                    
+                    // Show modal first
+                    console.log('Showing reschedule modal...');
+                    Modal.show('rescheduleModal');
+                    
+                    // Wait a bit for modal to be rendered
+                    setTimeout(() => {
+                        // Populate modal with current appointment info
+                        const appointmentIdField = document.getElementById('rescheduleAppointmentId');
+                        const currentInfoField = document.getElementById('currentAppointmentInfo');
+                        const newDateField = document.querySelector('input[name="newDate"]');
+                        const newTimeField = document.querySelector('input[name="newTime"]');
+                        
+                        if (appointmentIdField) {
+                            appointmentIdField.value = appointmentId;
+                        }
+                        
+                        if (currentInfoField) {
+                            currentInfoField.innerHTML = `
+                                <p><strong>Pacient:</strong> ${appointment.patientName || appointment.firstName + ' ' + appointment.lastName}</p>
+                                <p><strong>Data actuală:</strong> ${appointment.date}</p>
+                                <p><strong>Ora actuală:</strong> ${appointment.startTime}</p>
+                                <p><strong>Tip:</strong> ${appointment.type}</p>
+                            `;
+                        }
+                        
+                        // Set current date and time as default
+                        if (newDateField) {
+                            newDateField.value = appointment.date;
+                        }
+                        if (newTimeField) {
+                            newTimeField.value = appointment.startTime;
+                        }
+                    }, 100);
+                } else {
+                    console.error('Failed to fetch appointment details');
+                    alert('Eroare la încărcarea detaliilor programării!');
+                }
+            } catch (error) {
+                console.error('Error loading appointment details:', error);
+                alert('Eroare la încărcarea detaliilor programării!');
+            }
+        };
+
+        // Handle reschedule form submission
+        window.handleRescheduleSubmit = async function(e) {
+            e.preventDefault();
+            
+            const rescheduleForm = document.getElementById('rescheduleForm');
+            if (!rescheduleForm) {
+                console.error('Reschedule form not found');
+                return;
+            }
+            
+            const formData = new FormData(rescheduleForm);
+            const appointmentId = formData.get('appointmentId');
+            const newDate = formData.get('newDate');
+            const newTime = formData.get('newTime');
+            const reason = formData.get('rescheduleReason');
+            const notifyPatient = formData.get('notifyPatient') === 'on';
+            
+            console.log('Rescheduling appointment:', { appointmentId, newDate, newTime, reason, notifyPatient });
+            
+            try {
+                const response = await apiRequest(`/appointments/${appointmentId}/reschedule`, {
+                    method: 'PUT',
+                    body: JSON.stringify({
+                        newDate,
+                        newTime,
+                        reason,
+                        notifyPatient
+                    })
+                });
+                
+                if (response) {
+                    alert('Programarea a fost reprogramată cu succes!');
+                    // Close modal
+                    Modal.hide('rescheduleModal');
+                    // Reload appointments
+                    const today = new Date().toISOString().split('T')[0];
+                    loadAppointmentsForDate(today);
+                }
+            } catch (error) {
+                console.error('Error rescheduling appointment:', error);
+                alert('Eroare la reprogramarea programării!');
+            }
+        };
+
+        // Set up form event listener when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            const rescheduleForm = document.getElementById('rescheduleForm');
+            if (rescheduleForm) {
+                rescheduleForm.addEventListener('submit', window.handleRescheduleSubmit);
+                console.log('Reschedule form event listener attached');
+            } else {
+                console.error('Reschedule form not found in DOM');
+            }
+        });
+
+        // Add test appointments (for development)
+        window.addTestAppointments = async function() {
+            try {
+                const today = new Date().toISOString().split('T')[0];
+                const testAppointments = [
+                    {
+                        id: 'appointment-1',
+                        patientId: 'patient-1',
+                        firstName: 'John',
+                        lastName: 'Davis',
+                        date: today,
+                        startTime: '09:00',
+                        type: 'Consultation',
+                        status: 'confirmed'
+                    },
+                    {
+                        id: 'appointment-2',
+                        patientId: 'patient-2',
+                        firstName: 'Sarah',
+                        lastName: 'Miller',
+                        date: today,
+                        startTime: '10:30',
+                        type: 'Physical Exam',
+                        status: 'pending'
+                    },
+                    {
+                        id: 'd59286fb-8c33-4dea-8bf7-f01aea79358e',
+                        patientId: 'patient-3',
+                        firstName: 'Robert',
+                        lastName: 'Johnson',
+                        date: today,
+                        startTime: '14:00',
+                        type: 'Follow-up',
+                        status: 'pending'
+                    }
+                ];
+
+                for (const appointment of testAppointments) {
+                    await apiRequest('/appointments', {
+                        method: 'POST',
+                        body: JSON.stringify(appointment)
+                    });
+                }
+
+                alert('Programări de test adăugate cu succes!');
+                // Reload appointments
+                loadAppointmentsForDate(today);
+            } catch (error) {
+                console.error('Error adding test appointments:', error);
+                alert('Eroare la adăugarea programărilor de test!');
+            }
+        };
+
+        // Reset database with test data
+        window.resetDatabase = async function() {
+            try {
+                const response = await fetch('/api/reset-db', {
+                    method: 'POST'
+                });
+                
+                if (response.ok) {
+                    alert('Baza de date a fost resetată cu succes!');
+                    // Reload appointments
+                    const today = new Date().toISOString().split('T')[0];
+                    loadAppointmentsForDate(today);
+                } else {
+                    alert('Eroare la resetarea bazei de date!');
+                }
+            } catch (error) {
+                console.error('Error resetting database:', error);
+                alert('Eroare la resetarea bazei de date!');
+            }
+        };
+
+        // Update existing appointment to today's date
+        window.updateAppointmentToToday = async function() {
+            try {
+                const today = new Date().toISOString().split('T')[0];
+                const response = await apiRequest(`/appointments/d59286fb-8c33-4dea-8bf7-f01aea79358e`, {
+                    method: 'PUT',
+                    body: JSON.stringify({
+                        date: today,
+                        startTime: '14:00'
+                    })
+                });
+                
+                if (response) {
+                    alert('Programarea a fost actualizată la data de azi!');
+                    // Reload appointments
+                    loadAppointmentsForDate(today);
+                }
+            } catch (error) {
+                console.error('Error updating appointment:', error);
+                alert('Eroare la actualizarea programării!');
+            }
+        };
+
+        // Debug function to check what appointments exist
+        window.debugAppointments = async function() {
+            try {
+                console.log('Checking all appointments...');
+                const response = await fetch('/api/appointments');
+                const appointments = await response.json();
+                console.log('All appointments:', appointments);
+                
+                const today = new Date().toISOString().split('T')[0];
+                console.log('Today is:', today);
+                
+                const todayAppointments = appointments.filter(apt => apt.date === today);
+                console.log('Today appointments:', todayAppointments);
+                
+                const specificAppointment = appointments.find(apt => apt.id === 'd59286fb-8c33-4dea-8bf7-f01aea79358e');
+                console.log('Specific appointment:', specificAppointment);
+                
+                alert(`Found ${appointments.length} total appointments, ${todayAppointments.length} for today. Check console for details.`);
+            } catch (error) {
+                console.error('Error debugging appointments:', error);
+                alert('Eroare la verificarea programărilor!');
+            }
+        };
+
+        // Create the specific appointment if it doesn't exist
+        window.createSpecificAppointment = async function() {
+            try {
+                const today = new Date().toISOString().split('T')[0];
+                const appointment = {
+                    id: 'd59286fb-8c33-4dea-8bf7-f01aea79358e',
+                    patientId: 'patient-3',
+                    firstName: 'Robert',
+                    lastName: 'Johnson',
+                    date: today,
+                    startTime: '14:00',
+                    type: 'Follow-up',
+                    status: 'pending'
+                };
+
+                const response = await apiRequest('/appointments', {
+                    method: 'POST',
+                    body: JSON.stringify(appointment)
+                });
+                
+                if (response) {
+                    alert('Programarea specifică a fost creată cu succes!');
+                    // Reload appointments
+                    loadAppointmentsForDate(today);
+                }
+            } catch (error) {
+                console.error('Error creating specific appointment:', error);
+                alert('Eroare la crearea programării specifice!');
+            }
+        };
+
+        // Test function to check if API routes work
+        window.testAPI = async function() {
+            try {
+                console.log('Testing API routes...');
+                
+                // Test GET appointments
+                const appointments = await fetch('/api/appointments');
+                const appointmentsData = await appointments.json();
+                console.log('GET /api/appointments:', appointmentsData);
+                
+                // Test confirm appointment-2
+                const confirmResponse = await fetch('/api/appointments/appointment-2/confirm', {
+                    method: 'PUT'
+                });
+                const confirmData = await confirmResponse.json();
+                console.log('PUT /api/appointments/appointment-2/confirm:', confirmData);
+                
+                alert('Check console for API test results!');
+            } catch (error) {
+                console.error('API test error:', error);
+                alert('API test failed! Check console for details.');
+            }
+        };
+
+        // Debug function to check modal elements
+        window.debugModal = function() {
+            console.log('Checking reschedule modal elements...');
+            const modal = document.getElementById('rescheduleModal');
+            const form = document.getElementById('rescheduleForm');
+            const submitBtn = form ? form.querySelector('button[type="submit"]') : null;
+            
+            console.log('Modal element:', modal);
+            console.log('Form element:', form);
+            console.log('Submit button:', submitBtn);
+            
+            if (modal) {
+                console.log('Modal classes:', modal.className);
+                console.log('Modal display style:', window.getComputedStyle(modal).display);
+            }
+            
+            alert('Check console for modal debug info!');
+        };
+
+        // Load appointments on page load
+        document.addEventListener('DOMContentLoaded', checkAuthStatus);
+    </script>
+
+    <!-- Reschedule Appointment Modal -->
+    <div id="rescheduleModal" class="tw-modal fixed inset-0 bg-[#000000d1] bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="bg-white dark:bg-gray-800 tw-modal-dialog rounded-2xl shadow-premium p-8 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto text-gray-900 dark:text-gray-100">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-2xl font-display font-bold">Reprogramează Întâlnirea</h3>
+                <button data-modal-close class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                    <i data-lucide="x" class="w-6 h-6 dark:text-gray-300"></i>
+                </button>
+            </div>
+            
+            <form id="rescheduleForm" class="space-y-6">
+                <input type="hidden" id="rescheduleAppointmentId" name="appointmentId">
+                
+                <!-- Current appointment info -->
+                <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-4">
+                    <h4 class="font-semibold text-gray-900 dark:text-white mb-2">Programarea actuală:</h4>
+                    <div id="currentAppointmentInfo" class="text-sm text-gray-600 dark:text-gray-300">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- New date and time -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 font-body">Noua dată *</label>
+                        <input type="date" name="newDate" required 
+                            class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 
+                                   rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 
+                                   focus:ring-2 focus:ring-purple-500 focus:border-transparent font-body focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 font-body">Noua oră *</label>
+                        <input type="time" name="newTime" step="60" required 
+                            class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 
+                                   rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 
+                                   focus:ring-2 focus:ring-purple-500 focus:border-transparent font-body focus:outline-none">
+                    </div>
+                </div>
+
+                <!-- Notify patient -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3 font-body">Notificare pacient</label>
+                    <div class="space-y-2">
+                        <label class="flex items-center space-x-3">
+                            <input type="checkbox" name="notifyPatient" checked 
+                                class="w-4 h-4 text-purple-600 border-gray-300 dark:border-gray-600 rounded focus:ring-purple-500 focus:outline-none">
+                            <span class="text-sm text-gray-700 dark:text-gray-300 font-body">Trimite notificare pacientului despre reprogramare</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700">
+                    <button type="button" data-modal-close 
+                        class="px-6 py-3 border border-gray-200 dark:border-gray-700 rounded-xl 
+                               font-medium text-gray-700 dark:text-gray-300 
+                               hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-body">
+                        Anulează
+                    </button>
+                    <button type="submit" 
+                        class="px-6 py-3 bg-orange-600 text-white rounded-xl font-medium hover:bg-orange-700 transition-colors font-body">
+                        Reprogramează Întâlnirea
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="assets/js/tailwind-modal.js"></script>
+    <script src="assets/js/script.js"></script>
+</body>
+</html>

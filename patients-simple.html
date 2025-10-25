@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pacienți - Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .patient-card { 
+            border: 1px solid #ddd; 
+            padding: 15px; 
+            margin: 10px 0; 
+            border-radius: 8px; 
+            background: white;
+        }
+        .patient-name { font-weight: bold; font-size: 18px; }
+        .patient-email { color: #666; }
+        .patient-phone { color: #666; }
+        .status { 
+            padding: 4px 8px; 
+            border-radius: 12px; 
+            font-size: 12px; 
+            font-weight: bold;
+        }
+        .status.active { background: #d4edda; color: #155724; }
+        .status.inactive { background: #f8d7da; color: #721c24; }
+        .loading { color: #666; font-style: italic; }
+        .error { color: #dc3545; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Pacienți - Test Simplu</h1>
+    <button onclick="loadPatients()" style="padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
+        Încarcă Pacienți
+    </button>
+    <button onclick="checkSyncStatus()" style="padding: 10px 20px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; margin-left: 10px;">
+        Verifică Sincronizarea
+    </button>
+    
+    <div id="sync-status" style="margin: 20px 0; padding: 10px; background: #f8f9fa; border-radius: 5px;"></div>
+    
+    <div id="patients-container">
+        <p class="loading">Apasă butonul "Încarcă Pacienți" pentru a vedea datele...</p>
+    </div>
+
+    <script>
+        // Simple API function
+        async function apiRequest(endpoint, options = {}) {
+            try {
+                console.log(`🔄 Making API request to: ${endpoint}`);
+                const response = await fetch(`/api${endpoint}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'same-origin',
+                    ...options
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log(`✅ API response from ${endpoint}:`, data);
+                return data;
+            } catch (error) {
+                console.error(`❌ API request failed for ${endpoint}:`, error);
+                return null;
+            }
+        }
+
+        // Load patients function
+        async function loadPatients() {
+            const container = document.getElementById('patients-container');
+            container.innerHTML = '<p class="loading">Se încarcă pacienții...</p>';
+            
+            try {
+                console.log('🔄 Starting to load patients...');
+                
+                const patients = await apiRequest('/patients');
+                
+                if (patients && patients.length > 0) {
+                    container.innerHTML = patients.map(patient => `
+                        <div class="patient-card">
+                            <div class="patient-name">${patient.firstName} ${patient.lastName}</div>
+                            <div class="patient-email">Email: ${patient.email}</div>
+                            <div class="patient-phone">Telefon: ${patient.phone || 'N/A'}</div>
+                            <span class="status ${patient.status === 'inactive' ? 'inactive' : 'active'}">
+                                ${patient.status === 'inactive' ? 'Inactiv' : 'Activ'}
+                            </span>
+                        </div>
+                    `).join('');
+                    
+                    console.log(`✅ Loaded ${patients.length} patients successfully`);
+                } else {
+                    container.innerHTML = '<p class="error">Nu s-au găsit pacienți în baza de date.</p>';
+                    console.log('⚠️ No patients found');
+                }
+            } catch (error) {
+                container.innerHTML = `<p class="error">Eroare la încărcarea pacienților: ${error.message}</p>`;
+                console.error('❌ Error loading patients:', error);
+            }
+        }
+
+        // Check sync status function
+        async function checkSyncStatus() {
+            const statusDiv = document.getElementById('sync-status');
+            statusDiv.innerHTML = '<p class="loading">Se verifică statusul de sincronizare...</p>';
+            
+            try {
+                const syncStatus = await apiRequest('/sync-status');
+                
+                if (syncStatus) {
+                    statusDiv.innerHTML = `
+                        <h3>Status Sincronizare</h3>
+                        <p><strong>Baza de date conectată:</strong> ${syncStatus.databaseConnected ? 'Da' : 'Nu'}</p>
+                        <p><strong>Sursa datelor:</strong> ${syncStatus.dataSource}</p>
+                        <p><strong>Numărul de pacienți:</strong> ${syncStatus.patientsCount}</p>
+                        <p><strong>Numărul de programări:</strong> ${syncStatus.appointmentsCount}</p>
+                        <p><strong>Ultima sincronizare:</strong> ${new Date(syncStatus.lastSync).toLocaleString('ro-RO')}</p>
+                    `;
+                    console.log('✅ Sync status checked successfully:', syncStatus);
+                } else {
+                    statusDiv.innerHTML = '<p class="error">Nu s-a putut verifica statusul de sincronizare.</p>';
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `<p class="error">Eroare la verificarea statusului: ${error.message}</p>`;
+                console.error('❌ Error checking sync status:', error);
+            }
+        }
+
+        // Auto-load patients when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📄 Page loaded, starting tests...');
+            checkSyncStatus();
+            loadPatients();
+        });
+    </script>
+</body>
+</html>

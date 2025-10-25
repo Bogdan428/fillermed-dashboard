@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>500</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="./assets/css/output.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="h-full transition-colors duration-300" style="background-color: #fbfdfb !important;">
+    <!-- Theme Toggle -->
+    <div class="absolute top-4 right-4">
+        <button id="theme-toggle" class="p-2 rounded-lg bg-white dark:bg-gray-800 shadow-md hover:shadow-lg transition-all duration-200">
+            <i data-lucide="sun" class="w-5 h-5 hidden dark:block text-gray-600 dark:text-gray-300"></i>
+            <i data-lucide="moon" class="w-5 h-5 block dark:hidden text-gray-600 dark:text-gray-300"></i>
+        </button>
+    </div>
+
+    <div class="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8">
+        <div class="sm:mx-auto sm:w-full sm:max-w-md text-center">
+            <!-- 500 Illustration -->
+            <div class="mx-auto mb-8">
+                <svg class="w-32 h-32 mx-auto text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                </svg>
+            </div>
+
+            <h1 class="text-9xl font-bold text-red-600 dark:text-red-400 mb-4">500</h1>
+            <h2 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white mb-4">
+                Server error
+            </h2>
+            <p class="text-lg text-gray-600 dark:text-gray-400 mb-8 max-w-md mx-auto">
+                Oops! Something went wrong on our end. We're working to fix this issue. Please try again in a few minutes.
+            </p>
+
+            <div class="space-y-4 sm:space-y-0 sm:space-x-4 sm:flex sm:justify-center">
+                <button onclick="location.reload()" 
+                    class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-base font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-offset-gray-900 transition-colors duration-200">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                    Try again
+                </button>
+                <a href="index.html" 
+                    class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-offset-gray-900 transition-colors duration-200">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                    </svg>
+                    Go home
+                </a>
+            </div>
+
+           
+
+            <div class="mt-8">
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                    Need immediate help? 
+                    <a href="mailto:support@yourapp.com" class="font-medium text-red-600 hover:text-red-500 dark:text-red-400 dark:hover:text-red-300">
+                        Contact support
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="assets/js/tailwind-modal.js"></script>
+    <script src="assets/js/script.js"></script>
+</body>
+</html>

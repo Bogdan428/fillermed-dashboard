@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ro" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rapoarte</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="./assets/css/output.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="h-full transition-colors duration-300">
+    <div class="flex h-screen">
+        <!-- Sidebar Overlay (for mobile) -->
+        <div id="sidebar-overlay" class=""></div>
+
+        <!-- Sophisticated Sidebar -->
+        <div id="sidebar" class="w-72 bg-white dark:bg-gray-800 shadow-premium border-r border-gray-200 dark:border-gray-700">
+            <div class="flex flex-col h-full">
+                <!-- Logo and Close Button Section -->
+                <div class="p-6 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center h-[85px]">
+                    <div>
+                         <a href="index.html" class="flex items-center justify-center"> 
+                             <div class="w-32 h-32 flex items-center justify-center bg-transparent">
+                                 <img src="assets/images/logo.png" alt="FillerMed Logo" class="w-28 h-28 object-contain">
+                             </div>
+                         </a>
+                    </div>
+                    <button id="sidebar-close" class="lg:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <i data-lucide="x" class="w-5 h-5 dark:text-gray-300"></i>
+                    </button>
+                </div>
+
+                <!-- Navigation -->
+                 <nav class="flex-1 overflow-y-auto py-6 px-4 custom-scrollbar">
+                    <ul class="space-y-2">
+                        <li>
+                            <a href="index.html" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white font-medium transition-all duration-200">
+                                <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+                                <span>Panou Principal</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="patients.html" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white font-medium transition-all duration-200">
+                                <i data-lucide="users" class="w-5 h-5"></i>
+                                <span>Clienți</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="appointments.html" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white font-medium transition-all duration-200">
+                                <i data-lucide="calendar" class="w-5 h-5"></i>
+                                <span>Programări</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="reports.html" class="active flex items-center space-x-3 px-4 py-3 rounded-xl bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/30 dark:to-purple-900/30 text-purple-700 dark:text-primary-300 font-medium shadow-sm transition-all">
+                                <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+                                <span>Rapoarte</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+
+                <!-- User Profile -->
+                <div class="border-t border-gray-200 dark:border-gray-700 h-20 flex items-center p-4">
+                    <div class="flex items-center space-x-3 p-3 rounded-xl bg-gray-50 dark:bg-gray-700 w-full">
+                        <div class="w-10 h-10 bg-gradient-to-br from-primary-600 to-primary-700 rounded-full flex items-center justify-center">
+                            <span class="text-white font-semibold text-sm">R</span>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-sm font-display font-semibold text-gray-900 dark:text-white">Recepționeră</p>
+                            <p class="text-xs font-body text-gray-500 dark:text-gray-400">Recepție</p>
+                        </div>
+                        <a href="#"><i data-lucide="log-out" class="w-4 h-4 text-gray-400"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Header -->
+            <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 px-4 sm:px-6 py-4 h-[85px]">
+                <div class="flex items-center justify-between flex-wrap gap-4 header-content">
+                    <div class="flex items-center flex-1 min-w-0">
+                        <!-- Hamburger Menu Button (visible on mobile/tablet) -->
+                        <button id="sidebar-toggle" class="hamburger-btn mr-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                            <i data-lucide="menu" class="w-5 h-5 dark:text-gray-300"></i>
+                        </button>
+                        <div class="min-w-0">
+                            <h2 class="text-xl sm:text-2xl font-display font-bold text-gray-900 dark:text-white truncate">Rapoarte și Analize</h2>
+                            <p class="text-xs sm:text-sm font-body text-gray-500 dark:text-gray-400 mt-1 truncate">Vezi metricile de performanță</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2 sm:space-x-3 header-actions flex-shrink-0">
+                        <div class="relative search-container hidden sm:block">
+                            <input type="text" placeholder="Caută..." class="w-40 md:w-48 lg:w-60 px-4 py-2 pl-10 pr-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent font-body bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none">
+                            <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-3 top-3"></i>
+                        </div>
+                        <button id="mobile-search-btn" class="sm:hidden p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                            <i data-lucide="search" class="w-5 h-5"></i>
+                        </button>
+                        <!-- Theme toggle button -->
+                        <button id="theme-toggle" class="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                            <i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i>
+                            <i data-lucide="moon" class="w-5 h-5 block dark:hidden"></i>
+                        </button>
+                        
+                        <!-- Settings Dropdown -->
+                        <div class="relative">
+                            <button id="settings-btn" class="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                                <i data-lucide="settings" class="w-5 h-5"></i>
+                            </button>
+                            
+                            <!-- Settings Dropdown Menu -->
+                            <div id="settings-dropdown" class="hidden absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 z-50 py-2 glass-effect">
+                                <div class="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
+                                    <h3 class="font-display font-semibold text-gray-900 dark:text-white">Setări</h3>
+                                </div>
+                                <div class="px-4 py-2 border-t border-gray-200 dark:border-gray-700">
+                                    <button class="w-full flex items-center justify-center px-4 py-2 bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-lg transition-colors">
+                                        <i data-lucide="log-out" class="w-4 h-4 mr-2"></i>
+                                        Deconectare
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Mobile Search Bar (hidden by default) -->
+                 <div id="mobile-search-container" class="hidden bg-white absolute left-0 w-full right-0 px-4 pb-2 top-[75px] z-[999]">
+                    <div class="relative">
+                        <input type="search" placeholder="Caută..."
+                            class="w-full px-4 py-2 pl-10 pr-4 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent font-body bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none">
+                        <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-3 top-3"></i>
+                    </div>
+                </div>
+            </header>
+
+        <main class="flex-1 overflow-y-auto p-4 sm:p-6 bg-gray-50 dark:bg-gray-900">
+            <!-- Key Metrics -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-neutral-200 dark:border-gray-700 hover-lift">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-neutral-600 dark:text-gray-400 text-sm font-medium">Clienți Noi Luna Aceasta</p>
+                            <p class="text-3xl font-bold text-neutral-800 dark:text-white mt-1" data-stat="new-patients-this-month">0</p>
+                            <p class="text-blue-600 dark:text-blue-400 text-sm mt-2" data-stat="new-patients-trend">pacienți noi adăugați</p>
+                        </div>
+                        <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
+                            <i data-lucide="user-plus" class="w-6 h-6 text-blue-600 dark:text-blue-400"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-neutral-200 dark:border-gray-700 hover-lift">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-neutral-600 dark:text-gray-400 text-sm font-medium">Timpul Mediu de Așteptare</p>
+                            <p class="text-3xl font-bold text-neutral-800 dark:text-white mt-1">18 min</p>
+                            <p class="text-green-600 text-sm mt-2">↗ îmbunătățire cu 3 min</p>
+                        </div>
+                        <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
+                            <i data-lucide="clock" class="w-6 h-6 text-blue-600 dark:text-blue-400"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-neutral-200 dark:border-gray-700 hover-lift">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-neutral-600 dark:text-gray-400 text-sm font-medium">Ocuparea Paturilor</p>
+                            <p class="text-3xl font-bold text-neutral-800 dark:text-white mt-1">87%</p>
+                            <p class="text-orange-600 text-sm mt-2">↗ +5% față de luna trecută</p>
+                        </div>
+                        <div class="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-xl flex items-center justify-center">
+                            <i data-lucide="bed" class="w-6 h-6 text-orange-600 dark:text-orange-400"></i>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Charts Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <!-- New Patients Chart -->
+                <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-neutral-200 dark:border-gray-700">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-semibold text-neutral-800 dark:text-white">Clienți Noi Luna Aceasta</h3>
+                        <select class="border border-neutral-300 dark:border-gray-600 rounded-lg px-3 py-1 text-sm bg-white dark:bg-gray-700 text-neutral-800 dark:text-white focus:outline-none" id="newPatientsPeriod">
+                            <option value="daily">Zilnic</option>
+                            <option value="weekly">Săptămânal</option>
+                            <option value="monthly" selected>Lunar</option>
+                        </select>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="newPatientsChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Revenue Analysis -->
+                <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-neutral-200 dark:border-gray-700">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-semibold text-neutral-800 dark:text-white">Analiza Veniturilor</h3>
+                        <select class="border border-neutral-300 dark:border-gray-600 rounded-lg px-3 py-1 text-sm bg-white dark:bg-gray-700 text-neutral-800 dark:text-white focus:outline-none">
+                            <option>Anul Acesta</option>
+                            <option>Anul Trecut</option>
+                            <option>Compară Anii</option>
+                        </select>
+                    </div>
+                     <div class="chart-container">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                    
+                </div>
+            </div>
+        </main>
+         <!-- Footer -->
+            <footer>
+                <div class="px-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 flex justify-center items-center h-16">
+                    <p class="text-sm font-body text-gray-500 dark:text-gray-400 flex flex-wrap sm:gap-2 justify-center items-center text-center">
+                    
+                    
+                    </p>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        // Simple API functions
+        async function apiRequest(endpoint, options = {}) {
+            try {
+                const response = await fetch(`/api${endpoint}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'same-origin',
+                    ...options
+                });
+                
+                if (response.status === 401) {
+                    window.location.href = '/';
+                    return;
+                }
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                return await response.json();
+            } catch (error) {
+                console.error('API request failed:', error);
+                return null;
+            }
+        }
+
+        // Load reports data
+        async function loadReportsData() {
+            try {
+                const stats = await apiRequest('/dashboard/stats');
+                
+                if (!stats) {
+                    console.log('No stats data received, using defaults');
+                    // Set default values
+                    const totalPatientsEl = document.querySelector('[data-stat="total-patients"]');
+                    const todaysAppointmentsEl = document.querySelector('[data-stat="todays-appointments"]');
+                    const pendingAppointmentsEl = document.querySelector('[data-stat="pending-appointments"]');
+                    
+                    if (totalPatientsEl) totalPatientsEl.textContent = '0';
+                    if (todaysAppointmentsEl) todaysAppointmentsEl.textContent = '0';
+                    if (pendingAppointmentsEl) pendingAppointmentsEl.textContent = '0 pending confirmations';
+                    return;
+                }
+                
+                // Update stats cards
+                const totalPatientsEl = document.querySelector('[data-stat="total-patients"]');
+                const todaysAppointmentsEl = document.querySelector('[data-stat="todays-appointments"]');
+                const pendingAppointmentsEl = document.querySelector('[data-stat="pending-appointments"]');
+                const newPatientsEl = document.querySelector('[data-stat="new-patients-this-month"]');
+                const newPatientsTrendEl = document.querySelector('[data-stat="new-patients-trend"]');
+                
+                if (totalPatientsEl) totalPatientsEl.textContent = stats.totalPatients || 0;
+                if (todaysAppointmentsEl) todaysAppointmentsEl.textContent = stats.todaysAppointments || 0;
+                if (pendingAppointmentsEl) pendingAppointmentsEl.textContent = `${stats.pendingAppointments || 0} pending confirmations`;
+                
+                // Update new patients this month
+                const newPatientsThisMonth = stats.newPatientsThisMonth || 0;
+                if (newPatientsEl) newPatientsEl.textContent = newPatientsThisMonth;
+                if (newPatientsTrendEl) {
+                    if (newPatientsThisMonth > 0) {
+                        newPatientsTrendEl.textContent = `+${newPatientsThisMonth} pacienți noi adăugați`;
+                    } else {
+                        newPatientsTrendEl.textContent = 'niciun pacient nou adăugat';
+                    }
+                }
+                
+                // Update new patients statistics everywhere
+                if (typeof updateNewPatientsStatistics === 'function') {
+                    updateNewPatientsStatistics(stats.newPatientsThisMonth || 0);
+                }
+                
+            } catch (error) {
+                console.error('Error loading reports data:', error);
+            }
+        }
+
+
+        // Check authentication status
+        async function checkAuthStatus() {
+            try {
+                const response = await fetch('/api/auth/status', {
+                    credentials: 'same-origin'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.authenticated) {
+                        // User is authenticated, load page data
+                        loadReportsData();
+                    } else {
+                        // User is not authenticated, redirect to login
+                        window.location.href = '/login.html';
+                    }
+                } else {
+                    // Error checking auth status, redirect to login
+                    window.location.href = '/login.html';
+                }
+            } catch (error) {
+                console.error('Error checking auth status:', error);
+                // Error occurred, redirect to login
+                window.location.href = '/login.html';
+            }
+        }
+
+        // Load reports data on page load
+        document.addEventListener('DOMContentLoaded', checkAuthStatus);
+    </script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="assets/js/tailwind-modal.js"></script>
+    <script src="assets/js/script.js"></script>
+</body>
+</html>

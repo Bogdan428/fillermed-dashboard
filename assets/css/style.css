@@ -1,0 +1,205 @@
+/* 
+Name                 : CuraPanel - Free Tailwind CSS Healthcare Admin Dashboard Template
+Author               : TemplateRise
+Url                  : https://www.templaterise.com/template/curapanel-free-tailwind-css-healthcare-admin-dashboard-template 
+*/
+
+/* Custom background color for the entire application */
+body {
+  background-color: #fbfdfb;
+}
+
+html {
+  background-color: #fbfdfb;
+}
+
+/* Dark mode background */
+.dark body {
+  background-color: #111827 !important;
+}
+
+.dark html {
+  background-color: #111827 !important;
+}
+
+/* Override any existing background colors */
+.bg-gray-50 {
+  background-color: #fbfdfb;
+}
+
+.dark .bg-gray-50 {
+  background-color: #1f2937 !important;
+}
+
+.bg-white {
+  background-color: #fbfdfb;
+}
+
+.dark .bg-white {
+  background-color: #1f2937 !important;
+}
+
+/* Ensure all main containers use the custom background */
+.h-full {
+  background-color: #fbfdfb;
+}
+
+.dark .h-full {
+  background-color: #111827 !important;
+}
+
+.flex.h-screen {
+  background-color: #fbfdfb;
+}
+
+.dark .flex.h-screen {
+  background-color: #111827 !important;
+}
+
+/* Logo styling for dark mode */
+.logo-container {
+  background: transparent !important;
+}
+
+.dark .logo-container {
+  background: transparent !important;
+}
+
+/* Ensure logo has no background in dark mode */
+.dark img[alt="FillerMed Logo"] {
+  background: transparent !important;
+  filter: brightness(1.1) contrast(1.1);
+}
+
+
+.glass-effect {
+  backdrop-filter: blur(16px);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dark .glass-effect {
+  background: rgba(30, 41, 59, 0.9);
+  border: 1px solid rgba(51, 65, 85, 0.2);
+}
+
+.status-online {
+  background: linear-gradient(135deg, #10b981, #059669);
+}
+.status-busy {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+.status-offline {
+  background: linear-gradient(135deg, #6b7280, #4b5563);
+}
+
+.hover-lift {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.dark .hover-lift:hover {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+}
+
+/* Dropdown animations */
+.dropdown-enter {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.dropdown-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.dropdown-exit {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.dropdown-exit-active {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+/* Responsive sidebar styles */
+@media (max-width: 1023px) {
+  #sidebar {
+    position: fixed;
+    left: -288px;
+    top: 0;
+    height: 100%;
+    z-index: 50;
+    transition: left 0.3s ease;
+  }
+
+  #sidebar.active {
+    left: 0;
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+  }
+
+  #sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 40;
+  }
+
+  #sidebar-overlay.active {
+    display: block;
+  }
+
+  .hamburger-btn {
+    display: block;
+  }
+}
+
+@media (min-width: 1024px) {
+  #sidebar {
+    position: relative;
+    left: 0;
+  }
+
+  .hamburger-btn {
+    display: none;
+  }
+
+  #sidebar-overlay {
+    display: none !important;
+  }
+}
+
+/* Custom scrollbar for dropdowns */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #475569;
+}
+
+.chart-container {
+  position: relative;
+  height: 20rem;
+  width: 100%;
+}
