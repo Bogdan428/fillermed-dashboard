@@ -111,6 +111,7 @@ async function connectToMongoDB() {
     
   } catch (error) {
     console.error('❌ MongoDB connection failed:', error);
+    console.log('🔄 Trying alternative connection...');
     
     // Try alternative connection with different SSL settings
     try {
@@ -153,10 +154,10 @@ async function connectToMongoDB() {
     } catch (altError) {
       console.error('❌ Alternative MongoDB connection also failed:', altError);
       console.log('❌ CRITICAL: Cannot connect to MongoDB Atlas!');
-      console.log('❌ Application will not function without database connection!');
+      console.log('❌ Application will start but will not function without database connection!');
       isConnected = false;
-      // No fallback - force MongoDB connection
-      throw new Error('MongoDB connection failed - application cannot start without database');
+      // Don't throw error - let application start but show warning
+      console.log('⚠️ Application started without MongoDB connection - all endpoints will return errors');
     }
   }
 }
@@ -651,6 +652,26 @@ app.get('/api/dashboard/stats', async (req, res) => {
   }
 });
 
+// Health check endpoint
+app.get('/api/health', async (req, res) => {
+  try {
+    const dbConnected = await checkDatabaseConnection();
+    res.json({
+      status: 'ok',
+      database: dbConnected ? 'connected' : 'disconnected',
+      timestamp: new Date().toISOString(),
+      environment: process.env.NODE_ENV || 'development',
+      platform: process.env.RENDER ? 'Render' : 'Local'
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      message: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // Sync status endpoint - check if data is synchronized
 app.get('/api/sync-status', async (req, res) => {
   try {
@@ -940,14 +961,30 @@ if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
   });
 }
 
-// For Render, always initialize database connection
+// For Render, always initialize database connection with retry
 if (process.env.RENDER) {
   console.log('🔍 Render environment detected');
-  connectToMongoDB().then(() => {
-    console.log('🚀 FillerMed Dashboard ready on Render');
-  }).catch(error => {
-    console.error('❌ Failed to connect to MongoDB on Render:', error);
-  });
+  
+  // Retry MongoDB connection on Render
+  const retryMongoDB = async (retries = 3) => {
+    for (let i = 0; i < retries; i++) {
+      try {
+        console.log(`🔄 Attempting MongoDB connection (${i + 1}/${retries})...`);
+        await connectToMongoDB();
+        console.log('🚀 FillerMed Dashboard ready on Render');
+        return;
+      } catch (error) {
+        console.error(`❌ Attempt ${i + 1} failed:`, error.message);
+        if (i < retries - 1) {
+          console.log(`⏳ Waiting 5 seconds before retry...`);
+          await new Promise(resolve => setTimeout(resolve, 5000));
+        }
+      }
+    }
+    console.log('❌ All MongoDB connection attempts failed - application will start without database');
+  };
+  
+  retryMongoDB();
 }
 
 // Graceful shutdown
