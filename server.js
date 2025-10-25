@@ -15,6 +15,10 @@ const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://fillermed-admin:Fi
 console.log('🔍 MongoDB Configuration:');
 console.log('📊 MONGODB_URI set:', !!process.env.MONGODB_URI);
 console.log('📊 Using URI:', MONGODB_URI.substring(0, 50) + '...');
+console.log('📊 Environment variables:');
+console.log('📊 NODE_ENV:', process.env.NODE_ENV);
+console.log('📊 RENDER:', process.env.RENDER);
+console.log('📊 VERCEL:', process.env.VERCEL);
 let db;
 let mongoClient;
 
@@ -48,6 +52,29 @@ function requireAuth(req, res, next) {
 
 app.use(express.static('.'));
 
+// Test MongoDB URI validity
+function testMongoDBURI() {
+  try {
+    console.log('🔍 Testing MongoDB URI validity...');
+    console.log('📊 URI starts with mongodb+srv:', MONGODB_URI.startsWith('mongodb+srv://'));
+    console.log('📊 URI contains fillermed:', MONGODB_URI.includes('fillermed'));
+    console.log('📊 URI contains ssl=true:', MONGODB_URI.includes('ssl=true'));
+    console.log('📊 URI contains authSource=admin:', MONGODB_URI.includes('authSource=admin'));
+    
+    // Check if URI is properly formatted
+    const url = new URL(MONGODB_URI);
+    console.log('📊 URI protocol:', url.protocol);
+    console.log('📊 URI hostname:', url.hostname);
+    console.log('📊 URI pathname:', url.pathname);
+    console.log('📊 URI search params:', url.search);
+    
+    return true;
+  } catch (error) {
+    console.error('❌ MongoDB URI is invalid:', error.message);
+    return false;
+  }
+}
+
 // Connect to MongoDB
 async function connectToMongoDB() {
   try {
@@ -55,25 +82,44 @@ async function connectToMongoDB() {
     console.log('📊 MONGODB_URI length:', MONGODB_URI.length);
     console.log('📊 Environment:', process.env.NODE_ENV || 'development');
     
-    mongoClient = new MongoClient(MONGODB_URI, {
-      serverSelectionTimeoutMS: 30000, // 30 second timeout
-      connectTimeoutMS: 30000, // 30 second timeout
-      socketTimeoutMS: 60000, // 60 second timeout
-      maxPoolSize: 10,
+    // Test URI validity first
+    if (!testMongoDBURI()) {
+      throw new Error('MongoDB URI is invalid');
+    }
+    
+    // Try different connection options for Render
+    const connectionOptions = {
+      serverSelectionTimeoutMS: 10000, // 10 second timeout
+      connectTimeoutMS: 10000, // 10 second timeout
+      socketTimeoutMS: 30000, // 30 second timeout
+      maxPoolSize: 5,
       minPoolSize: 1,
-      maxIdleTimeMS: 30000,
-      serverSelectionRetryDelayMS: 5000,
-      heartbeatFrequencyMS: 10000,
-      ssl: true,
-      sslValidate: true,
-      tls: true,
-      tlsAllowInvalidCertificates: false,
-      tlsAllowInvalidHostnames: false,
+      maxIdleTimeMS: 10000,
+      serverSelectionRetryDelayMS: 2000,
+      heartbeatFrequencyMS: 5000,
       retryWrites: true,
       w: 'majority',
-      appName: 'fillermed',
-      authSource: 'admin'
-    });
+      appName: 'fillermed'
+    };
+
+    // Add SSL options only if not on Render
+    if (process.env.RENDER) {
+      console.log('🔍 Render environment - using simplified SSL options');
+      connectionOptions.ssl = true;
+      connectionOptions.tls = true;
+      connectionOptions.tlsAllowInvalidCertificates = false;
+      connectionOptions.tlsAllowInvalidHostnames = false;
+    } else {
+      console.log('🔍 Local environment - using full SSL options');
+      connectionOptions.ssl = true;
+      connectionOptions.sslValidate = true;
+      connectionOptions.tls = true;
+      connectionOptions.tlsAllowInvalidCertificates = false;
+      connectionOptions.tlsAllowInvalidHostnames = false;
+      connectionOptions.authSource = 'admin';
+    }
+
+    mongoClient = new MongoClient(MONGODB_URI, connectionOptions);
     
     await mongoClient.connect();
     db = mongoClient.db('fillermed');
@@ -116,19 +162,32 @@ async function connectToMongoDB() {
     // Try alternative connection with different SSL settings
     try {
       console.log('🔄 Trying alternative MongoDB connection...');
-      const alternativeURI = MONGODB_URI.replace('ssl=true', 'ssl=false').replace('tls=true', 'tls=false');
+      
+      // Try different URI variations for Render
+      let alternativeURI = MONGODB_URI;
+      
+      if (process.env.RENDER) {
+        // For Render, try without SSL first
+        alternativeURI = MONGODB_URI.replace('ssl=true', 'ssl=false').replace('tls=true', 'tls=false');
+        console.log('🔍 Render: Trying without SSL/TLS');
+      } else {
+        // For local, try with different SSL settings
+        alternativeURI = MONGODB_URI.replace('ssl=true', 'ssl=false');
+        console.log('🔍 Local: Trying without SSL');
+      }
+      
       mongoClient = new MongoClient(alternativeURI, {
-        serverSelectionTimeoutMS: 30000,
-        connectTimeoutMS: 30000,
-        socketTimeoutMS: 60000,
-        maxPoolSize: 10,
+        serverSelectionTimeoutMS: 10000,
+        connectTimeoutMS: 10000,
+        socketTimeoutMS: 30000,
+        maxPoolSize: 5,
         minPoolSize: 1,
-        maxIdleTimeMS: 30000,
-        serverSelectionRetryDelayMS: 5000,
-        heartbeatFrequencyMS: 10000,
+        maxIdleTimeMS: 10000,
+        serverSelectionRetryDelayMS: 2000,
+        heartbeatFrequencyMS: 5000,
         retryWrites: true,
         w: 'majority',
-        authSource: 'admin'
+        appName: 'fillermed'
       });
       
       await mongoClient.connect();
