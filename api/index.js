@@ -140,18 +140,23 @@ app.get('/api/auth/status', (req, res) => {
 
 // Login endpoint
 app.post('/api/auth/login', async (req, res) => {
+  console.log('🔐 Login endpoint called:', req.path);
+  console.log('📝 Request body:', req.body);
+  
   const { username, password } = req.body;
   
   // Simple authentication (in production, use proper authentication)
   if (username === 'receptionist' && password === 'welcome123') {
     req.session.userId = 'user-123';
     req.session.username = username;
+    console.log('✅ Login successful for:', username);
     res.json({ 
       success: true, 
       message: 'Login successful',
       user: { id: 'user-123', username: username }
     });
   } else {
+    console.log('❌ Login failed for:', username);
     res.status(401).json({ 
       success: false, 
       message: 'Invalid credentials' 
@@ -828,17 +833,6 @@ app.get('*', (req, res) => {
     // For other requests, serve index.html
     res.sendFile(path.join(__dirname, '../index.html'));
   }
-});
-
-// Catch-all route for POST requests (but not API routes)
-app.post('*', (req, res) => {
-  // Skip API routes
-  if (req.path.startsWith('/api/')) {
-    return res.status(404).json({ error: 'API endpoint not found' });
-  }
-  
-  // For non-API POST requests, return 404
-  res.status(404).json({ error: 'Endpoint not found' });
 });
 
 // Initialize database connection
