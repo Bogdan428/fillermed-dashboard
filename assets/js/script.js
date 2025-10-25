@@ -356,7 +356,7 @@ function initCharts() {
   const revenueEl = document.getElementById("revenueChart");
   if (revenueEl) {
     const revenueCtx = revenueEl.getContext("2d");
-     revenueChart = new Chart(revenueCtx, {
+    revenueChart = new Chart(revenueCtx, {
       type: "bar",
       data: {
         labels: ["Q1", "Q2", "Q3", "Q4"],
@@ -472,19 +472,21 @@ function updateChartsForTheme() {
     newPatientsChart.update();
   }
 
-  // Update Revenue Chart
-  revenueChart.options.plugins.legend.labels.color = textColor;
-  revenueChart.options.plugins.tooltip.backgroundColor = isDarkMode
-    ? "#1F2937"
-    : "#FFFFFF";
-  revenueChart.options.plugins.tooltip.titleColor = textColor;
-  revenueChart.options.plugins.tooltip.bodyColor = textColor;
-  revenueChart.options.plugins.tooltip.borderColor = gridColor;
-  revenueChart.options.scales.x.grid.color = gridColor;
-  revenueChart.options.scales.x.ticks.color = textColor;
-  revenueChart.options.scales.y.grid.color = gridColor;
-  revenueChart.options.scales.y.ticks.color = textColor;
-  revenueChart.update();
+  // Update Revenue Chart (if it exists)
+  if (revenueChart && revenueChart.options) {
+    revenueChart.options.plugins.legend.labels.color = textColor;
+    revenueChart.options.plugins.tooltip.backgroundColor = isDarkMode
+      ? "#1F2937"
+      : "#FFFFFF";
+    revenueChart.options.plugins.tooltip.titleColor = textColor;
+    revenueChart.options.plugins.tooltip.bodyColor = textColor;
+    revenueChart.options.plugins.tooltip.borderColor = gridColor;
+    revenueChart.options.scales.x.grid.color = gridColor;
+    revenueChart.options.scales.x.ticks.color = textColor;
+    revenueChart.options.scales.y.grid.color = gridColor;
+    revenueChart.options.scales.y.ticks.color = textColor;
+    revenueChart.update();
+  }
 }
 
 // Initialize charts when the page loads
