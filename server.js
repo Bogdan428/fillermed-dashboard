@@ -154,6 +154,11 @@ async function connectToMongoDB() {
 
 // Check if database is connected and working
 async function checkDatabaseConnection() {
+  console.log('🔍 Checking database connection...');
+  console.log('📊 isConnected:', isConnected);
+  console.log('📊 db exists:', !!db);
+  console.log('📊 mongoClient exists:', !!mongoClient);
+  
   if (!isConnected || !db) {
     console.log('⚠️ Database not connected, using mock data');
     return false;
@@ -161,21 +166,25 @@ async function checkDatabaseConnection() {
   
   try {
     // Test the connection by pinging the database
+    console.log('🔍 Pinging database...');
     await db.admin().ping();
     console.log('✅ Database connection is active');
     
     // Also test by counting documents
     try {
+      console.log('🔍 Counting documents...');
       const patientsCount = await db.collection('patients').countDocuments();
       const appointmentsCount = await db.collection('appointments').countDocuments();
       console.log(`📊 Database status: ${patientsCount} patients, ${appointmentsCount} appointments`);
+      return true;
     } catch (countError) {
       console.log('⚠️ Could not count documents, but ping succeeded');
+      console.log('📊 Count error:', countError.message);
+      return true; // Ping succeeded, so connection is good
     }
-    
-    return true;
   } catch (error) {
     console.error('❌ Database connection check failed:', error);
+    console.error('📊 Error details:', error.message);
     isConnected = false;
     return false;
   }
@@ -643,18 +652,26 @@ app.get('/api/dashboard/stats', async (req, res) => {
 // Sync status endpoint - check if data is synchronized
 app.get('/api/sync-status', async (req, res) => {
   try {
+    console.log('🔍 Checking sync status...');
+    console.log('📊 isConnected:', isConnected);
+    console.log('📊 db exists:', !!db);
+    
     const dbConnected = await checkDatabaseConnection();
+    console.log('📊 dbConnected result:', dbConnected);
     
     const syncInfo = {
       databaseConnected: dbConnected,
       isConnected: isConnected,
       timestamp: new Date().toISOString(),
-      dataSource: dbConnected ? 'MongoDB' : 'Mock Data',
-      connectionStatus: dbConnected ? 'Active' : 'Fallback to Mock Data'
+      dataSource: dbConnected ? 'MongoDB Atlas' : 'Mock Data',
+      connectionStatus: dbConnected ? 'Active' : 'Fallback to Mock Data',
+      environment: process.env.NODE_ENV || 'development',
+      mongodbUri: process.env.MONGODB_URI ? 'Set' : 'Not Set'
     };
     
-    if (dbConnected) {
+    if (dbConnected && db) {
       try {
+        console.log('📊 Counting documents in database...');
         const patientsCount = await db.collection('patients').countDocuments();
         const appointmentsCount = await db.collection('appointments').countDocuments();
         
@@ -662,20 +679,33 @@ app.get('/api/sync-status', async (req, res) => {
         syncInfo.appointmentsCount = appointmentsCount;
         syncInfo.lastSync = new Date().toISOString();
         syncInfo.databaseStatus = 'Healthy';
+        syncInfo.message = `Connected to MongoDB Atlas with ${patientsCount} patients and ${appointmentsCount} appointments`;
+        
+        console.log(`📊 Database status: ${patientsCount} patients, ${appointmentsCount} appointments`);
       } catch (dbError) {
+        console.error('❌ Database error in sync status:', dbError);
         syncInfo.databaseError = dbError.message;
         syncInfo.databaseStatus = 'Error';
+        syncInfo.message = `Database error: ${dbError.message}`;
       }
     } else {
       syncInfo.patientsCount = mockData.patients.length;
       syncInfo.appointmentsCount = mockData.appointments.length;
       syncInfo.databaseStatus = 'Using Mock Data';
+      syncInfo.message = `Using mock data with ${mockData.patients.length} patients and ${mockData.appointments.length} appointments`;
+      
+      console.log(`📊 Mock data status: ${mockData.patients.length} patients, ${mockData.appointments.length} appointments`);
     }
     
+    console.log('📊 Sync status response:', syncInfo);
     res.json(syncInfo);
   } catch (error) {
-    console.error('Error checking sync status:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error('❌ Error checking sync status:', error);
+    res.status(500).json({ 
+      error: 'Internal server error',
+      message: error.message,
+      timestamp: new Date().toISOString()
+    });
   }
 });
 
