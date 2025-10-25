@@ -117,6 +117,76 @@ async function checkDatabaseConnection() {
   }
 }
 
+// ==================== STATIC FILES (HIGH PRIORITY) ====================
+
+// Serve static files with correct MIME types
+app.get('/assets/*', (req, res) => {
+  const filePath = path.join(__dirname, '..', req.path);
+  const ext = path.extname(filePath).toLowerCase();
+  
+  // Set correct MIME type
+  if (ext === '.css') {
+    res.setHeader('Content-Type', 'text/css');
+  } else if (ext === '.js') {
+    res.setHeader('Content-Type', 'application/javascript');
+  } else if (ext === '.png') {
+    res.setHeader('Content-Type', 'image/png');
+  } else if (ext === '.jpg' || ext === '.jpeg') {
+    res.setHeader('Content-Type', 'image/jpeg');
+  } else if (ext === '.gif') {
+    res.setHeader('Content-Type', 'image/gif');
+  } else if (ext === '.svg') {
+    res.setHeader('Content-Type', 'image/svg+xml');
+  } else if (ext === '.ico') {
+    res.setHeader('Content-Type', 'image/x-icon');
+  }
+  
+  res.sendFile(filePath);
+});
+
+// Serve CSS files with correct MIME type
+app.get('*.css', (req, res) => {
+  res.setHeader('Content-Type', 'text/css');
+  res.sendFile(path.join(__dirname, '..', req.path));
+});
+
+// Serve JS files with correct MIME type
+app.get('*.js', (req, res) => {
+  res.setHeader('Content-Type', 'application/javascript');
+  res.sendFile(path.join(__dirname, '..', req.path));
+});
+
+// Serve image files with correct MIME types
+app.get('*.png', (req, res) => {
+  res.setHeader('Content-Type', 'image/png');
+  res.sendFile(path.join(__dirname, '..', req.path));
+});
+
+app.get('*.jpg', (req, res) => {
+  res.setHeader('Content-Type', 'image/jpeg');
+  res.sendFile(path.join(__dirname, '..', req.path));
+});
+
+app.get('*.jpeg', (req, res) => {
+  res.setHeader('Content-Type', 'image/jpeg');
+  res.sendFile(path.join(__dirname, '..', req.path));
+});
+
+app.get('*.gif', (req, res) => {
+  res.setHeader('Content-Type', 'image/gif');
+  res.sendFile(path.join(__dirname, '..', req.path));
+});
+
+app.get('*.svg', (req, res) => {
+  res.setHeader('Content-Type', 'image/svg+xml');
+  res.sendFile(path.join(__dirname, '..', req.path));
+});
+
+app.get('*.ico', (req, res) => {
+  res.setHeader('Content-Type', 'image/x-icon');
+  res.sendFile(path.join(__dirname, '..', req.path));
+});
+
 // ==================== API ROUTES ====================
 
 // Auth status
@@ -782,75 +852,6 @@ app.get('/index.html', (req, res) => {
   res.sendFile(path.join(__dirname, '../index.html'));
 });
 
-// ==================== STATIC FILES ====================
-
-// Serve static files with correct MIME types
-app.get('/assets/*', (req, res) => {
-  const filePath = path.join(__dirname, '..', req.path);
-  const ext = path.extname(filePath).toLowerCase();
-  
-  // Set correct MIME type
-  if (ext === '.css') {
-    res.setHeader('Content-Type', 'text/css');
-  } else if (ext === '.js') {
-    res.setHeader('Content-Type', 'application/javascript');
-  } else if (ext === '.png') {
-    res.setHeader('Content-Type', 'image/png');
-  } else if (ext === '.jpg' || ext === '.jpeg') {
-    res.setHeader('Content-Type', 'image/jpeg');
-  } else if (ext === '.gif') {
-    res.setHeader('Content-Type', 'image/gif');
-  } else if (ext === '.svg') {
-    res.setHeader('Content-Type', 'image/svg+xml');
-  } else if (ext === '.ico') {
-    res.setHeader('Content-Type', 'image/x-icon');
-  }
-  
-  res.sendFile(filePath);
-});
-
-// Serve CSS files with correct MIME type
-app.get('*.css', (req, res) => {
-  res.setHeader('Content-Type', 'text/css');
-  res.sendFile(path.join(__dirname, '..', req.path));
-});
-
-// Serve JS files with correct MIME type
-app.get('*.js', (req, res) => {
-  res.setHeader('Content-Type', 'application/javascript');
-  res.sendFile(path.join(__dirname, '..', req.path));
-});
-
-// Serve image files with correct MIME types
-app.get('*.png', (req, res) => {
-  res.setHeader('Content-Type', 'image/png');
-  res.sendFile(path.join(__dirname, '..', req.path));
-});
-
-app.get('*.jpg', (req, res) => {
-  res.setHeader('Content-Type', 'image/jpeg');
-  res.sendFile(path.join(__dirname, '..', req.path));
-});
-
-app.get('*.jpeg', (req, res) => {
-  res.setHeader('Content-Type', 'image/jpeg');
-  res.sendFile(path.join(__dirname, '..', req.path));
-});
-
-app.get('*.gif', (req, res) => {
-  res.setHeader('Content-Type', 'image/gif');
-  res.sendFile(path.join(__dirname, '..', req.path));
-});
-
-app.get('*.svg', (req, res) => {
-  res.setHeader('Content-Type', 'image/svg+xml');
-  res.sendFile(path.join(__dirname, '..', req.path));
-});
-
-app.get('*.ico', (req, res) => {
-  res.setHeader('Content-Type', 'image/x-icon');
-  res.sendFile(path.join(__dirname, '..', req.path));
-});
 
 // ==================== INITIALIZATION ====================
 
