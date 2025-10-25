@@ -144,10 +144,11 @@ async function connectToMongoDB() {
       
     } catch (altError) {
       console.error('❌ Alternative MongoDB connection also failed:', altError);
-      console.log('🔄 Falling back to mock data...');
+      console.log('❌ CRITICAL: Cannot connect to MongoDB Atlas!');
+      console.log('❌ Application will not function without database connection!');
       isConnected = false;
-      // Fallback to mock data if MongoDB fails
-      initializeMockData();
+      // No fallback - force MongoDB connection
+      throw new Error('MongoDB connection failed - application cannot start without database');
     }
   }
 }
@@ -220,25 +221,11 @@ async function initializeCollections() {
 }
 
 // Fallback mock data (if MongoDB fails)
-function initializeMockData() {
-  console.log('📊 Using mock data (in-memory)');
-}
+// No mock data initialization - force MongoDB connection only
 
 // Mock data storage (in-memory) - fallback only
-let mockData = {
-  users: [
-    {
-      id: 'user-1',
-      username: 'receptionist',
-      password: 'welcome123',
-      role: 'receptionist'
-    }
-  ],
-  patients: [],
-  appointments: []
-};
-
-console.log('Mock data initialized');
+// No mock data - force MongoDB connection only
+console.log('🚀 Starting application - MongoDB connection required');
 
 // API Routes
 
@@ -253,13 +240,15 @@ app.post('/api/login', async (req, res) => {
   try {
     let user;
     
-    if (db) {
-      // Use MongoDB
-      user = await db.collection('users').findOne({ username });
-    } else {
-      // Fallback to mock data
-      user = mockData.users.find(u => u.username === username);
+    if (!db) {
+      return res.status(500).json({ 
+        error: 'Database connection required', 
+        message: 'Cannot authenticate without MongoDB connection' 
+      });
     }
+    
+    // Use MongoDB only
+    user = await db.collection('users').findOne({ username });
     
     if (!user) {
       return res.status(401).json({ error: 'Invalid credentials' });
@@ -327,8 +316,11 @@ app.get('/api/patients', async (req, res) => {
       const patients = await db.collection('patients').find({}).toArray();
       res.json(patients);
     } else {
-      console.log('🔄 Using mock data for patients');
-      res.json(mockData.patients);
+      res.status(500).json({ 
+        error: 'Database connection required', 
+        message: 'Cannot fetch patients without MongoDB connection' 
+      });
+      return;
     }
   } catch (error) {
     console.error('Error fetching patients:', error);
@@ -346,7 +338,11 @@ app.get('/api/patients/:id', async (req, res) => {
     if (db) {
       patient = await db.collection('patients').findOne({ id });
     } else {
-      patient = mockData.patients.find(p => p.id === id);
+      res.status(500).json({ 
+        error: 'Database connection required', 
+        message: 'Cannot fetch patient without MongoDB connection' 
+      });
+      return;
     }
     
     if (!patient) {
@@ -376,7 +372,11 @@ app.post('/api/patients', async (req, res) => {
     if (db) {
       await db.collection('patients').insertOne(newPatient);
     } else {
-      mockData.patients.push(newPatient);
+      res.status(500).json({ 
+        error: 'Database connection required', 
+        message: 'Cannot create patient without MongoDB connection' 
+      });
+      return;
     }
     
     res.json({ id, message: 'Patient created successfully' });
@@ -406,16 +406,11 @@ app.put('/api/patients/:id', async (req, res) => {
         return res.status(404).json({ error: 'Patient not found' });
       }
     } else {
-      const patientIndex = mockData.patients.findIndex(p => p.id === id);
-      
-      if (patientIndex === -1) {
-        return res.status(404).json({ error: 'Patient not found' });
-      }
-      
-      mockData.patients[patientIndex] = {
-        ...mockData.patients[patientIndex],
-        ...updateData
-      };
+      res.status(500).json({ 
+        error: 'Database connection required', 
+        message: 'Cannot update patient without MongoDB connection' 
+      });
+      return;
     }
     
     res.json({ message: 'Patient updated successfully' });
@@ -437,13 +432,11 @@ app.delete('/api/patients/:id', async (req, res) => {
         return res.status(404).json({ error: 'Patient not found' });
       }
     } else {
-      const patientIndex = mockData.patients.findIndex(p => p.id === id);
-      
-      if (patientIndex === -1) {
-        return res.status(404).json({ error: 'Patient not found' });
-      }
-      
-      mockData.patients.splice(patientIndex, 1);
+      res.status(500).json({ 
+        error: 'Database connection required', 
+        message: 'Cannot delete patient without MongoDB connection' 
+      });
+      return;
     }
     
     res.json({ message: 'Patient deleted successfully' });
@@ -497,7 +490,11 @@ app.post('/api/appointments', async (req, res) => {
     if (db) {
       patient = await db.collection('patients').findOne({ id: appointmentData.patientId });
     } else {
-      patient = mockData.patients.find(p => p.id === appointmentData.patientId);
+      res.status(500).json({ 
+        error: 'Database connection required', 
+        message: 'Cannot create appointment without MongoDB connection' 
+      });
+      return;
     }
     
     const newAppointment = {
@@ -512,7 +509,11 @@ app.post('/api/appointments', async (req, res) => {
     if (db) {
       await db.collection('appointments').insertOne(newAppointment);
     } else {
-      mockData.appointments.push(newAppointment);
+      res.status(500).json({ 
+        error: 'Database connection required', 
+        message: 'Cannot create appointment without MongoDB connection' 
+      });
+      return;
     }
     
     res.json({ id, message: 'Appointment created successfully' });
@@ -627,19 +628,12 @@ app.get('/api/dashboard/stats', async (req, res) => {
     } else {
       console.log('🔄 Using mock data for dashboard stats');
       
-      // Calculate new patients this month from mock data
-      const newPatientsThisMonth = mockData.patients.filter(patient => {
-        if (!patient.createdAt) return false;
-        const patientDate = new Date(patient.createdAt);
-        return patientDate >= startOfMonth && patientDate <= endOfMonth;
-      }).length;
-      
-      stats = {
-        totalPatients: mockData.patients.length,
-        todaysAppointments: mockData.appointments.filter(a => a.date === today).length,
-        pendingAppointments: mockData.appointments.filter(a => a.status === 'pending').length,
-        newPatientsThisMonth
-      };
+      // Cannot calculate stats without MongoDB connection
+      res.status(500).json({ 
+        error: 'Database connection required', 
+        message: 'Cannot fetch dashboard stats without MongoDB connection' 
+      });
+      return;
     }
     
     res.json(stats);
@@ -689,12 +683,12 @@ app.get('/api/sync-status', async (req, res) => {
         syncInfo.message = `Database error: ${dbError.message}`;
       }
     } else {
-      syncInfo.patientsCount = mockData.patients.length;
-      syncInfo.appointmentsCount = mockData.appointments.length;
-      syncInfo.databaseStatus = 'Using Mock Data';
-      syncInfo.message = `Using mock data with ${mockData.patients.length} patients and ${mockData.appointments.length} appointments`;
+      syncInfo.patientsCount = 0;
+      syncInfo.appointmentsCount = 0;
+      syncInfo.databaseStatus = 'MongoDB Connection Required';
+      syncInfo.message = 'MongoDB connection is required - no fallback to mock data';
       
-      console.log(`📊 Mock data status: ${mockData.patients.length} patients, ${mockData.appointments.length} appointments`);
+      console.log('❌ MongoDB connection required - no mock data fallback');
     }
     
     console.log('📊 Sync status response:', syncInfo);
@@ -724,14 +718,11 @@ app.put('/api/appointments/:id/confirm', async (req, res) => {
         return res.status(404).json({ error: 'Appointment not found' });
       }
     } else {
-      const appointmentIndex = mockData.appointments.findIndex(a => a.id === id);
-      
-      if (appointmentIndex === -1) {
-        return res.status(404).json({ error: 'Appointment not found' });
-      }
-      
-      mockData.appointments[appointmentIndex].status = 'confirmed';
-      mockData.appointments[appointmentIndex].updatedAt = new Date();
+      res.status(500).json({ 
+        error: 'Database connection required', 
+        message: 'Cannot confirm appointment without MongoDB connection' 
+      });
+      return;
     }
     
     res.json({ message: 'Appointment confirmed successfully' });
@@ -756,14 +747,11 @@ app.put('/api/appointments/:id/cancel', async (req, res) => {
         return res.status(404).json({ error: 'Appointment not found' });
       }
     } else {
-      const appointmentIndex = mockData.appointments.findIndex(a => a.id === id);
-      
-      if (appointmentIndex === -1) {
-        return res.status(404).json({ error: 'Appointment not found' });
-      }
-      
-      mockData.appointments[appointmentIndex].status = 'cancelled';
-      mockData.appointments[appointmentIndex].updatedAt = new Date();
+      res.status(500).json({ 
+        error: 'Database connection required', 
+        message: 'Cannot cancel appointment without MongoDB connection' 
+      });
+      return;
     }
     
     res.json({ message: 'Appointment cancelled successfully' });
@@ -798,18 +786,11 @@ app.put('/api/appointments/:id/reschedule', async (req, res) => {
         return res.status(404).json({ error: 'Appointment not found' });
       }
     } else {
-      const appointmentIndex = mockData.appointments.findIndex(a => a.id === id);
-      
-      if (appointmentIndex === -1) {
-        return res.status(404).json({ error: 'Appointment not found' });
-      }
-      
-      mockData.appointments[appointmentIndex].date = newDate;
-      mockData.appointments[appointmentIndex].startTime = newTime;
-      mockData.appointments[appointmentIndex].rescheduleReason = reason;
-      mockData.appointments[appointmentIndex].notifyPatient = notifyPatient;
-      mockData.appointments[appointmentIndex].status = 'confirmed'; // Auto-confirm after reschedule
-      mockData.appointments[appointmentIndex].updatedAt = new Date();
+      res.status(500).json({ 
+        error: 'Database connection required', 
+        message: 'Cannot reschedule appointment without MongoDB connection' 
+      });
+      return;
     }
     
     res.json({ message: 'Appointment rescheduled and confirmed successfully' });
@@ -833,7 +814,11 @@ app.get('/api/appointments/:id', async (req, res) => {
       
       res.json(appointment);
     } else {
-      const appointment = mockData.appointments.find(a => a.id === id);
+      res.status(500).json({ 
+        error: 'Database connection required', 
+        message: 'Cannot fetch appointment without MongoDB connection' 
+      });
+      return;
       
       if (!appointment) {
         return res.status(404).json({ error: 'Appointment not found' });
@@ -858,11 +843,8 @@ app.post('/api/clear-test-data', async (req, res) => {
       console.log('🗑️ All test data cleared from database');
       res.json({ message: 'All test data cleared successfully' });
     } else {
-      // Clear mock data
-      mockData.appointments = [];
-      mockData.patients = [];
-      
-      console.log('🗑️ All test data cleared from mock data');
+      // No mock data to clear - MongoDB only
+      console.log('🗑️ No mock data to clear - MongoDB only');
       res.json({ message: 'All test data cleared from mock data' });
     }
   } catch (error) {
@@ -884,10 +866,8 @@ app.post('/api/reset-db', async (req, res) => {
       
       res.json({ message: 'Database reset successfully' });
     } else {
-      // Reset mock data
-      mockData.appointments = [];
-      mockData.patients = [];
-      initializeMockData();
+      // No mock data to reset - MongoDB only
+      console.log('🔄 No mock data to reset - MongoDB only');
       
       res.json({ message: 'Mock data reset successfully' });
     }
