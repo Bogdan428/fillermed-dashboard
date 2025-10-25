@@ -13,11 +13,11 @@
     },
     {
       "src": "/assets/(.*)",
-      "dest": "/public/assets/$1"
+      "dest": "/assets/$1"
     },
     {
       "src": "/(.*\\.(css|js|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot))",
-      "dest": "/public/$1"
+      "dest": "/$1"
     },
     {
       "src": "/(.*\\.html)",

@@ -156,6 +156,30 @@ app.post('/api/auth/login', async (req, res) => {
   }
 });
 
+// Alternative login endpoint (for compatibility)
+app.post('/api/login', async (req, res) => {
+  console.log('🔐 Alternative login endpoint called');
+  
+  const { username, password } = req.body;
+  
+  if (username === 'receptionist' && password === 'welcome123') {
+    req.session.userId = 'user-123';
+    req.session.username = username;
+    console.log('✅ Login successful');
+    res.json({ 
+      success: true, 
+      message: 'Login successful',
+      user: { id: 'user-123', username: username }
+    });
+  } else {
+    console.log('❌ Login failed');
+    res.status(401).json({ 
+      success: false, 
+      message: 'Invalid credentials' 
+    });
+  }
+});
+
 // Logout endpoint
 app.post('/api/auth/logout', (req, res) => {
   req.session.destroy((err) => {
