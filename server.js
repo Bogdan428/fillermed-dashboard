@@ -12,6 +12,11 @@ const PORT = process.env.PORT || 3000;
 // MongoDB Configuration
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://fillermed-admin:FillerMed2025!@fillermed.jk1v6hh.mongodb.net/fillermed?retryWrites=true&w=majority&appName=fillermed&ssl=true&authSource=admin';
 
+console.log('🔍 MongoDB URI Configuration:');
+console.log('📊 Environment MONGODB_URI exists:', !!process.env.MONGODB_URI);
+console.log('📊 Using URI:', MONGODB_URI);
+console.log('📊 URI length:', MONGODB_URI.length);
+
 console.log('🔍 MongoDB Configuration:');
 console.log('📊 MONGODB_URI set:', !!process.env.MONGODB_URI);
 console.log('📊 Using URI:', MONGODB_URI.substring(0, 50) + '...');
@@ -88,38 +93,22 @@ async function connectToMongoDB() {
       throw new Error('MongoDB URI is invalid');
     }
     
-    // Try different connection options for Render
+    // Simplified connection options for Render
     const connectionOptions = {
-      serverSelectionTimeoutMS: 10000, // 10 second timeout
-      connectTimeoutMS: 10000, // 10 second timeout
-      socketTimeoutMS: 30000, // 30 second timeout
-      maxPoolSize: 5,
+      serverSelectionTimeoutMS: 15000, // 15 second timeout
+      connectTimeoutMS: 15000, // 15 second timeout
+      socketTimeoutMS: 45000, // 45 second timeout
+      maxPoolSize: 3,
       minPoolSize: 1,
-      maxIdleTimeMS: 10000,
-      serverSelectionRetryDelayMS: 2000,
-      heartbeatFrequencyMS: 5000,
+      maxIdleTimeMS: 30000,
+      heartbeatFrequencyMS: 10000,
       retryWrites: true,
       w: 'majority',
-      appName: 'fillermed'
+      appName: 'fillermed',
+      authSource: 'admin'
     };
 
-    // Add SSL options only if not on Render
-    if (process.env.RENDER) {
-      console.log('🔍 Render environment - using simplified SSL options');
-      connectionOptions.ssl = true;
-      connectionOptions.tls = true;
-      connectionOptions.tlsAllowInvalidCertificates = false;
-      connectionOptions.tlsAllowInvalidHostnames = false;
-    } else {
-      console.log('🔍 Local environment - using full SSL options');
-      connectionOptions.ssl = true;
-      connectionOptions.sslValidate = true;
-      connectionOptions.tls = true;
-      connectionOptions.tlsAllowInvalidCertificates = false;
-      connectionOptions.tlsAllowInvalidHostnames = false;
-      connectionOptions.authSource = 'admin';
-    }
-
+    console.log('🔍 Connection options:', connectionOptions);
     mongoClient = new MongoClient(MONGODB_URI, connectionOptions);
     
     await mongoClient.connect();
@@ -164,31 +153,22 @@ async function connectToMongoDB() {
     try {
       console.log('🔄 Trying alternative MongoDB connection...');
       
-      // Try different URI variations for Render
-      let alternativeURI = MONGODB_URI;
-      
-      if (process.env.RENDER) {
-        // For Render, try without SSL first
-        alternativeURI = MONGODB_URI.replace('ssl=true', 'ssl=false').replace('tls=true', 'tls=false');
-        console.log('🔍 Render: Trying without SSL/TLS');
-      } else {
-        // For local, try with different SSL settings
-        alternativeURI = MONGODB_URI.replace('ssl=true', 'ssl=false');
-        console.log('🔍 Local: Trying without SSL');
-      }
+      // Try alternative URI without SSL for Render
+      const alternativeURI = MONGODB_URI.replace('ssl=true', 'ssl=false').replace('tls=true', 'tls=false');
+      console.log('🔍 Alternative URI:', alternativeURI);
       
       mongoClient = new MongoClient(alternativeURI, {
-        serverSelectionTimeoutMS: 10000,
-        connectTimeoutMS: 10000,
-        socketTimeoutMS: 30000,
-        maxPoolSize: 5,
+        serverSelectionTimeoutMS: 15000,
+        connectTimeoutMS: 15000,
+        socketTimeoutMS: 45000,
+        maxPoolSize: 3,
         minPoolSize: 1,
-        maxIdleTimeMS: 10000,
-        serverSelectionRetryDelayMS: 2000,
-        heartbeatFrequencyMS: 5000,
+        maxIdleTimeMS: 30000,
+        heartbeatFrequencyMS: 10000,
         retryWrites: true,
         w: 'majority',
-        appName: 'fillermed'
+        appName: 'fillermed',
+        authSource: 'admin'
       });
       
       await mongoClient.connect();
