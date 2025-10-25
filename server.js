@@ -11,6 +11,10 @@ const PORT = process.env.PORT || 3000;
 
 // MongoDB Configuration
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://fillermed-admin:FillerMed2025!@fillermed.jk1v6hh.mongodb.net/fillermed?retryWrites=true&w=majority&appName=fillermed&ssl=true&authSource=admin';
+
+console.log('🔍 MongoDB Configuration:');
+console.log('📊 MONGODB_URI set:', !!process.env.MONGODB_URI);
+console.log('📊 Using URI:', MONGODB_URI.substring(0, 50) + '...');
 let db;
 let mongoClient;
 
@@ -47,6 +51,10 @@ app.use(express.static('.'));
 // Connect to MongoDB
 async function connectToMongoDB() {
   try {
+    console.log('🔍 Starting MongoDB connection...');
+    console.log('📊 MONGODB_URI length:', MONGODB_URI.length);
+    console.log('📊 Environment:', process.env.NODE_ENV || 'development');
+    
     mongoClient = new MongoClient(MONGODB_URI, {
       serverSelectionTimeoutMS: 30000, // 30 second timeout
       connectTimeoutMS: 30000, // 30 second timeout
@@ -929,6 +937,16 @@ if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
   // For Vercel, initialize database connection without starting server
   connectToMongoDB().then(() => {
     console.log('🚀 FillerMed Dashboard ready on Vercel');
+  });
+}
+
+// For Render, always initialize database connection
+if (process.env.RENDER) {
+  console.log('🔍 Render environment detected');
+  connectToMongoDB().then(() => {
+    console.log('🚀 FillerMed Dashboard ready on Render');
+  }).catch(error => {
+    console.error('❌ Failed to connect to MongoDB on Render:', error);
   });
 }
 
