@@ -723,7 +723,15 @@ app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, '../login.html'));
 });
 
+app.get('/login.html', (req, res) => {
+  res.sendFile(path.join(__dirname, '../login.html'));
+});
+
 app.get('/patients', (req, res) => {
+  res.sendFile(path.join(__dirname, '../patients.html'));
+});
+
+app.get('/patients.html', (req, res) => {
   res.sendFile(path.join(__dirname, '../patients.html'));
 });
 
@@ -731,12 +739,28 @@ app.get('/appointments', (req, res) => {
   res.sendFile(path.join(__dirname, '../appointments.html'));
 });
 
+app.get('/appointments.html', (req, res) => {
+  res.sendFile(path.join(__dirname, '../appointments.html'));
+});
+
 app.get('/reports', (req, res) => {
+  res.sendFile(path.join(__dirname, '../reports.html'));
+});
+
+app.get('/reports.html', (req, res) => {
   res.sendFile(path.join(__dirname, '../reports.html'));
 });
 
 app.get('/patients-simple', (req, res) => {
   res.sendFile(path.join(__dirname, '../patients-simple.html'));
+});
+
+app.get('/patients-simple.html', (req, res) => {
+  res.sendFile(path.join(__dirname, '../patients-simple.html'));
+});
+
+app.get('/index.html', (req, res) => {
+  res.sendFile(path.join(__dirname, '../index.html'));
 });
 
 // Serve static files
