@@ -768,6 +768,18 @@ app.get('/assets/*', (req, res) => {
   res.sendFile(path.join(__dirname, '..', req.path));
 });
 
+// Catch-all route for any other requests
+app.get('*', (req, res) => {
+  // If it's an HTML file request, serve it
+  if (req.path.endsWith('.html')) {
+    const fileName = req.path.substring(1); // Remove leading slash
+    res.sendFile(path.join(__dirname, '..', fileName));
+  } else {
+    // For other requests, serve index.html
+    res.sendFile(path.join(__dirname, '../index.html'));
+  }
+});
+
 // Initialize database connection
 connectToMongoDB();
 
