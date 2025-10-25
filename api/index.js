@@ -768,6 +768,51 @@ app.get('/assets/*', (req, res) => {
   res.sendFile(path.join(__dirname, '..', req.path));
 });
 
+// Serve CSS files
+app.get('*.css', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', req.path));
+});
+
+// Serve specific CSS files
+app.get('/assets/css/*', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', req.path));
+});
+
+// Serve JS files
+app.get('*.js', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', req.path));
+});
+
+// Serve specific JS files
+app.get('/assets/js/*', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', req.path));
+});
+
+// Serve image files
+app.get('*.png', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', req.path));
+});
+
+app.get('*.jpg', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', req.path));
+});
+
+app.get('*.jpeg', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', req.path));
+});
+
+app.get('*.gif', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', req.path));
+});
+
+app.get('*.svg', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', req.path));
+});
+
+app.get('*.ico', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', req.path));
+});
+
 // Catch-all route for any other requests
 app.get('*', (req, res) => {
   // If it's an HTML file request, serve it
