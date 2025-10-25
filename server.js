@@ -10,7 +10,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // MongoDB Configuration
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://fillermed-admin:FillerMed2025!@fillermed.jk1v6hh.mongodb.net/?retryWrites=true&w=majority&appName=fillermed&ssl=true&authSource=admin';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://fillermed-admin:FillerMed2025!@fillermed.jk1v6hh.mongodb.net/fillermed?retryWrites=true&w=majority&appName=fillermed&ssl=true&authSource=admin';
 let db;
 let mongoClient;
 
@@ -48,9 +48,14 @@ app.use(express.static('.'));
 async function connectToMongoDB() {
   try {
     mongoClient = new MongoClient(MONGODB_URI, {
-      serverSelectionTimeoutMS: 10000, // 10 second timeout
-      connectTimeoutMS: 15000, // 15 second timeout
-      socketTimeoutMS: 45000, // 45 second timeout
+      serverSelectionTimeoutMS: 30000, // 30 second timeout
+      connectTimeoutMS: 30000, // 30 second timeout
+      socketTimeoutMS: 60000, // 60 second timeout
+      maxPoolSize: 10,
+      minPoolSize: 1,
+      maxIdleTimeMS: 30000,
+      serverSelectionRetryDelayMS: 5000,
+      heartbeatFrequencyMS: 10000,
       ssl: true,
       sslValidate: true,
       tls: true,
@@ -58,7 +63,8 @@ async function connectToMongoDB() {
       tlsAllowInvalidHostnames: false,
       retryWrites: true,
       w: 'majority',
-      appName: 'fillermed'
+      appName: 'fillermed',
+      authSource: 'admin'
     });
     
     await mongoClient.connect();
@@ -70,6 +76,16 @@ async function connectToMongoDB() {
     // Test connection by checking collections
     const collections = await db.listCollections().toArray();
     console.log('📊 Available collections:', collections.map(c => c.name));
+    
+    // Test database by counting documents
+    try {
+      const patientsCount = await db.collection('patients').countDocuments();
+      const appointmentsCount = await db.collection('appointments').countDocuments();
+      console.log(`📊 Patients in database: ${patientsCount}`);
+      console.log(`📅 Appointments in database: ${appointmentsCount}`);
+    } catch (testError) {
+      console.log('⚠️ Could not count documents, but connection is established');
+    }
     
     // Initialize collections (without sample data)
     await initializeCollections();
@@ -93,11 +109,17 @@ async function connectToMongoDB() {
       console.log('🔄 Trying alternative MongoDB connection...');
       const alternativeURI = MONGODB_URI.replace('ssl=true', 'ssl=false').replace('tls=true', 'tls=false');
       mongoClient = new MongoClient(alternativeURI, {
-        serverSelectionTimeoutMS: 10000,
-        connectTimeoutMS: 15000,
-        socketTimeoutMS: 45000,
+        serverSelectionTimeoutMS: 30000,
+        connectTimeoutMS: 30000,
+        socketTimeoutMS: 60000,
+        maxPoolSize: 10,
+        minPoolSize: 1,
+        maxIdleTimeMS: 30000,
+        serverSelectionRetryDelayMS: 5000,
+        heartbeatFrequencyMS: 10000,
         retryWrites: true,
-        w: 'majority'
+        w: 'majority',
+        authSource: 'admin'
       });
       
       await mongoClient.connect();
@@ -107,6 +129,17 @@ async function connectToMongoDB() {
       
       const collections = await db.listCollections().toArray();
       console.log('📊 Available collections:', collections.map(c => c.name));
+      
+      // Test database by counting documents
+      try {
+        const patientsCount = await db.collection('patients').countDocuments();
+        const appointmentsCount = await db.collection('appointments').countDocuments();
+        console.log(`📊 Patients in database: ${patientsCount}`);
+        console.log(`📅 Appointments in database: ${appointmentsCount}`);
+      } catch (testError) {
+        console.log('⚠️ Could not count documents, but connection is established');
+      }
+      
       await initializeCollections();
       
     } catch (altError) {
@@ -122,12 +155,24 @@ async function connectToMongoDB() {
 // Check if database is connected and working
 async function checkDatabaseConnection() {
   if (!isConnected || !db) {
+    console.log('⚠️ Database not connected, using mock data');
     return false;
   }
   
   try {
-    // Simple ping to check connection
+    // Test the connection by pinging the database
     await db.admin().ping();
+    console.log('✅ Database connection is active');
+    
+    // Also test by counting documents
+    try {
+      const patientsCount = await db.collection('patients').countDocuments();
+      const appointmentsCount = await db.collection('appointments').countDocuments();
+      console.log(`📊 Database status: ${patientsCount} patients, ${appointmentsCount} appointments`);
+    } catch (countError) {
+      console.log('⚠️ Could not count documents, but ping succeeded');
+    }
+    
     return true;
   } catch (error) {
     console.error('❌ Database connection check failed:', error);
