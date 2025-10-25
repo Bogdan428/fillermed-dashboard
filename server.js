@@ -18,7 +18,6 @@ console.log('📊 Using URI:', MONGODB_URI.substring(0, 50) + '...');
 console.log('📊 Environment variables:');
 console.log('📊 NODE_ENV:', process.env.NODE_ENV);
 console.log('📊 RENDER:', process.env.RENDER);
-console.log('📊 VERCEL:', process.env.VERCEL);
 let db;
 let mongoClient;
 
@@ -1000,25 +999,18 @@ app.get('/assets/*', (req, res) => {
   res.sendFile(path.join(__dirname, req.path));
 });
 
-// Start server only if not in Vercel environment
-if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
-  app.listen(PORT, async () => {
-    console.log(`🚀 FillerMed Dashboard running on http://localhost:${PORT}`);
-    
-    // Try to connect to MongoDB
-    await connectToMongoDB();
-    
-    console.log(`👩‍⚕️ Ready for receptionist use!`);
-    console.log('Default login credentials:');
-    console.log('Username: receptionist');
-    console.log('Password: welcome123');
-  });
-} else {
-  // For Vercel, initialize database connection without starting server
-  connectToMongoDB().then(() => {
-    console.log('🚀 FillerMed Dashboard ready on Vercel');
-  });
-}
+// Start server
+app.listen(PORT, async () => {
+  console.log(`🚀 FillerMed Dashboard running on http://localhost:${PORT}`);
+  
+  // Try to connect to MongoDB
+  await connectToMongoDB();
+  
+  console.log(`👩‍⚕️ Ready for receptionist use!`);
+  console.log('Default login credentials:');
+  console.log('Username: receptionist');
+  console.log('Password: welcome123');
+});
 
 // For Render, always initialize database connection with retry
 if (process.env.RENDER) {
@@ -1077,5 +1069,5 @@ process.on('SIGTERM', async () => {
   process.exit(0);
 });
 
-// Export pentru Vercel
+// Export pentru deployment
 module.exports = app;
