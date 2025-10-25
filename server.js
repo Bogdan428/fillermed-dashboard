@@ -801,18 +801,25 @@ app.get('/dashboard', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Start server
-app.listen(PORT, async () => {
-  console.log(`🚀 FillerMed Dashboard running on http://localhost:${PORT}`);
-  
-  // Try to connect to MongoDB
-  await connectToMongoDB();
-  
-  console.log(`👩‍⚕️ Ready for receptionist use!`);
-  console.log('Default login credentials:');
-  console.log('Username: receptionist');
-  console.log('Password: welcome123');
-});
+// Start server only if not in Vercel environment
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+  app.listen(PORT, async () => {
+    console.log(`🚀 FillerMed Dashboard running on http://localhost:${PORT}`);
+    
+    // Try to connect to MongoDB
+    await connectToMongoDB();
+    
+    console.log(`👩‍⚕️ Ready for receptionist use!`);
+    console.log('Default login credentials:');
+    console.log('Username: receptionist');
+    console.log('Password: welcome123');
+  });
+} else {
+  // For Vercel, initialize database connection without starting server
+  connectToMongoDB().then(() => {
+    console.log('🚀 FillerMed Dashboard ready on Vercel');
+  });
+}
 
 // Graceful shutdown
 process.on('SIGINT', async () => {
