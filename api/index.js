@@ -13,9 +13,13 @@ const PORT = process.env.PORT || 3000;
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://fillermed-admin:FillerMed2025!@fillermed.jk1v6hh.mongodb.net/?retryWrites=true&w=majority&appName=fillermed';
 let db;
 let mongoClient;
-
-// Database connection status
 let isConnected = false;
+
+// Mock data for fallback
+const mockData = {
+  patients: [],
+  appointments: []
+};
 
 // Middleware
 app.use(cors());
@@ -28,8 +32,8 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: { 
-    secure: false, // Set to true if using HTTPS
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    secure: false,
+    maxAge: 24 * 60 * 60 * 1000
   }
 }));
 
@@ -42,15 +46,13 @@ function requireAuth(req, res, next) {
   }
 }
 
-app.use(express.static('.'));
-
 // Connect to MongoDB
 async function connectToMongoDB() {
   try {
     mongoClient = new MongoClient(MONGODB_URI, {
-      serverSelectionTimeoutMS: 5000, // 5 second timeout
-      connectTimeoutMS: 10000, // 10 second timeout
-      socketTimeoutMS: 45000, // 45 second timeout
+      serverSelectionTimeoutMS: 5000,
+      connectTimeoutMS: 10000,
+      socketTimeoutMS: 45000,
     });
     
     await mongoClient.connect();
@@ -59,11 +61,9 @@ async function connectToMongoDB() {
     
     console.log('✅ Connected to MongoDB Atlas');
     
-    // Test connection by checking collections
     const collections = await db.listCollections().toArray();
     console.log('📊 Available collections:', collections.map(c => c.name));
     
-    // Initialize collections
     await initializeCollections();
     
   } catch (error) {
@@ -73,17 +73,10 @@ async function connectToMongoDB() {
   }
 }
 
-// Mock data for development
-const mockData = {
-  patients: [],
-  appointments: []
-};
-
-// Initialize collections with sample data
+// Initialize collections
 async function initializeCollections() {
   try {
     if (db) {
-      // Check if collections exist and create if needed
       const collections = await db.listCollections().toArray();
       const collectionNames = collections.map(c => c.name);
       
@@ -97,7 +90,6 @@ async function initializeCollections() {
         console.log('📅 Appointments collection created');
       }
       
-      // Check if we have any data
       const patientCount = await db.collection('patients').countDocuments();
       const appointmentCount = await db.collection('appointments').countDocuments();
       
@@ -125,7 +117,9 @@ async function checkDatabaseConnection() {
   }
 }
 
-// API Routes
+// ==================== API ROUTES ====================
+
+// Auth status
 app.get('/api/auth/status', (req, res) => {
   if (req.session && req.session.userId) {
     res.json({ 
@@ -140,23 +134,21 @@ app.get('/api/auth/status', (req, res) => {
 
 // Login endpoint
 app.post('/api/auth/login', async (req, res) => {
-  console.log('🔐 Login endpoint called:', req.path);
-  console.log('📝 Request body:', req.body);
+  console.log('🔐 Login endpoint called');
   
   const { username, password } = req.body;
   
-  // Simple authentication (in production, use proper authentication)
   if (username === 'receptionist' && password === 'welcome123') {
     req.session.userId = 'user-123';
     req.session.username = username;
-    console.log('✅ Login successful for:', username);
+    console.log('✅ Login successful');
     res.json({ 
       success: true, 
       message: 'Login successful',
       user: { id: 'user-123', username: username }
     });
   } else {
-    console.log('❌ Login failed for:', username);
+    console.log('❌ Login failed');
     res.status(401).json({ 
       success: false, 
       message: 'Invalid credentials' 
@@ -473,7 +465,6 @@ app.get('/api/dashboard/stats', async (req, res) => {
     const currentMonth = currentDate.getMonth();
     const currentYear = currentDate.getFullYear();
 
-    // Calculate start and end of current month
     const startOfMonth = new Date(currentYear, currentMonth, 1);
     const endOfMonth = new Date(currentYear, currentMonth + 1, 0);
 
@@ -503,7 +494,6 @@ app.get('/api/dashboard/stats', async (req, res) => {
     } else {
       console.log('🔄 Using mock data for dashboard stats');
 
-      // Calculate new patients this month from mock data
       const newPatientsThisMonth = mockData.patients.filter(patient => {
         if (!patient.createdAt) return false;
         const patientDate = new Date(patient.createdAt);
@@ -628,7 +618,7 @@ app.put('/api/appointments/:id/reschedule', async (req, res) => {
             startTime: newTime,
             rescheduleReason: reason,
             notifyPatient: notifyPatient,
-            status: 'confirmed', // Auto-confirm after reschedule
+            status: 'confirmed',
             updatedAt: new Date()
           } 
         }
@@ -649,7 +639,7 @@ app.put('/api/appointments/:id/reschedule', async (req, res) => {
       mockData.appointments[appointmentIndex].startTime = newTime;
       mockData.appointments[appointmentIndex].rescheduleReason = reason;
       mockData.appointments[appointmentIndex].notifyPatient = notifyPatient;
-      mockData.appointments[appointmentIndex].status = 'confirmed'; // Auto-confirm after reschedule
+      mockData.appointments[appointmentIndex].status = 'confirmed';
       mockData.appointments[appointmentIndex].updatedAt = new Date();
     }
     
@@ -697,13 +687,11 @@ app.post('/api/clear-test-data', async (req, res) => {
     const dbConnected = await checkDatabaseConnection();
     
     if (dbConnected) {
-      // Clear all test data
       await db.collection('appointments').deleteMany({});
       await db.collection('patients').deleteMany({});
       
       res.json({ message: 'All test data cleared from database' });
     } else {
-      // Clear mock data
       mockData.patients = [];
       mockData.appointments = [];
       
@@ -714,6 +702,8 @@ app.post('/api/clear-test-data', async (req, res) => {
     res.status(500).json({ error: 'Failed to reset database' });
   }
 });
+
+// ==================== HTML ROUTES ====================
 
 // Serve all HTML pages
 app.get('/', (req, res) => {
@@ -768,6 +758,8 @@ app.get('/index.html', (req, res) => {
   res.sendFile(path.join(__dirname, '../index.html'));
 });
 
+// ==================== STATIC FILES ====================
+
 // Serve static files
 app.get('/assets/*', (req, res) => {
   res.sendFile(path.join(__dirname, '..', req.path));
@@ -778,18 +770,8 @@ app.get('*.css', (req, res) => {
   res.sendFile(path.join(__dirname, '..', req.path));
 });
 
-// Serve specific CSS files
-app.get('/assets/css/*', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', req.path));
-});
-
 // Serve JS files
 app.get('*.js', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', req.path));
-});
-
-// Serve specific JS files
-app.get('/assets/js/*', (req, res) => {
   res.sendFile(path.join(__dirname, '..', req.path));
 });
 
@@ -818,22 +800,7 @@ app.get('*.ico', (req, res) => {
   res.sendFile(path.join(__dirname, '..', req.path));
 });
 
-// Catch-all route for GET requests (but not API routes)
-app.get('*', (req, res) => {
-  // Skip API routes
-  if (req.path.startsWith('/api/')) {
-    return res.status(404).json({ error: 'API endpoint not found' });
-  }
-  
-  // If it's an HTML file request, serve it
-  if (req.path.endsWith('.html')) {
-    const fileName = req.path.substring(1); // Remove leading slash
-    res.sendFile(path.join(__dirname, '..', fileName));
-  } else {
-    // For other requests, serve index.html
-    res.sendFile(path.join(__dirname, '../index.html'));
-  }
-});
+// ==================== INITIALIZATION ====================
 
 // Initialize database connection
 connectToMongoDB();
