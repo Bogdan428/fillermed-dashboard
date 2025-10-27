@@ -249,12 +249,24 @@ async function initializeCollections() {
       // Create default receptionist user
       await db.collection('users').insertOne({
         id: 'user-1',
-        username: 'receptionist',
-        password: 'welcome123',
+        username: 'b.hoca',
+        password: 'FillerMed2025',
         role: 'receptionist',
         createdAt: new Date()
       });
       console.log('👤 Default receptionist user created');
+    } else {
+      // Update existing user credentials
+      await db.collection('users').updateOne(
+        { username: 'receptionist' },
+        { 
+          $set: { 
+            username: 'b.hoca',
+            password: 'FillerMed2025'
+          } 
+        }
+      );
+      console.log('👤 User credentials updated');
     }
 
     // Check if patients collection exists (but don't create sample data)
@@ -1016,8 +1028,8 @@ app.listen(PORT, async () => {
   
   console.log(`👩‍⚕️ Ready for receptionist use!`);
   console.log('Default login credentials:');
-  console.log('Username: receptionist');
-  console.log('Password: welcome123');
+  console.log('Username: b.hoca');
+  console.log('Password: FillerMed2025');
 });
 
 // For Render, always initialize database connection with retry
