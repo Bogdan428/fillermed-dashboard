@@ -702,6 +702,11 @@ app.get('/api/dashboard/stats', async (req, res) => {
   }
 });
 
+// Ping endpoint for cron jobs and health checks
+app.get('/ping', (req, res) => {
+  res.send('pong');
+});
+
 // Test endpoint - simple response
 app.get('/api/test', (req, res) => {
   res.json({
