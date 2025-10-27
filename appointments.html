@@ -482,12 +482,18 @@
         // Add appointment functionality
         async function addAppointment(appointmentData) {
             try {
-                const response = await apiRequest('/appointments', {
+                const response = await fetch('/api/appointments', {
                     method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'same-origin',
                     body: JSON.stringify(appointmentData)
                 });
                 
-                if (response) {
+                const data = await response.json();
+                
+                if (response.ok) {
                     console.log('Appointment added successfully');
                     // Reload appointments list
                     loadAppointments();
@@ -506,6 +512,13 @@
                     }
                     // Show success message
                     alert('Programare adăugată cu succes!');
+                } else if (response.status === 409) {
+                    // Duplicate appointment error
+                    console.error('Duplicate appointment:', data.message);
+                    alert(data.message || 'Există deja o programare la această dată și oră. Vă rugăm alegeți o altă dată sau oră.');
+                } else {
+                    console.error('Error adding appointment:', data);
+                    alert('Eroare la adăugarea programării: ' + (data.message || data.error || 'Eroare necunoscută'));
                 }
             } catch (error) {
                 console.error('Error adding appointment:', error);

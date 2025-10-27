@@ -556,17 +556,29 @@ app.post('/api/appointments', async (req, res) => {
   const id = uuidv4();
   
   try {
-    // Find patient details
-    let patient;
-    if (db) {
-      patient = await db.collection('patients').findOne({ id: appointmentData.patientId });
-    } else {
+    if (!db) {
       res.status(500).json({ 
         error: 'Database connection required', 
         message: 'Cannot create appointment without MongoDB connection' 
       });
       return;
     }
+
+    // Check if there's already an appointment at the same date and time
+    const existingAppointment = await db.collection('appointments').findOne({
+      date: appointmentData.date,
+      startTime: appointmentData.startTime
+    });
+
+    if (existingAppointment) {
+      return res.status(409).json({ 
+        error: 'Duplicate appointment',
+        message: `Există deja o programare în data de ${appointmentData.date} la ora ${appointmentData.startTime}. Vă rugăm alegeți o altă dată sau oră.`
+      });
+    }
+
+    // Find patient details
+    const patient = await db.collection('patients').findOne({ id: appointmentData.patientId });
     
     const newAppointment = {
       id,
@@ -577,15 +589,7 @@ app.post('/api/appointments', async (req, res) => {
       updatedAt: new Date()
     };
     
-    if (db) {
-      await db.collection('appointments').insertOne(newAppointment);
-    } else {
-      res.status(500).json({ 
-        error: 'Database connection required', 
-        message: 'Cannot create appointment without MongoDB connection' 
-      });
-      return;
-    }
+    await db.collection('appointments').insertOne(newAppointment);
     
     res.json({ id, message: 'Appointment created successfully' });
   } catch (error) {
