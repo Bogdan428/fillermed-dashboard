@@ -149,37 +149,17 @@
 
             <div class="mb-6">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <!-- Search and Stats -->
-                    <div class="flex flex-col sm:flex-row sm:items-center gap-4">
-                        <!-- Search Bar -->
-                        <div class="relative">
-                            <input type="text" id="patientSearch" placeholder="Caută pacienți..." class="w-full sm:w-80 px-4 py-2 pl-10 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent font-body bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none">
-                            <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                        </div>
-                        
-                        <!-- Live Patient Count -->
-                        <div class="flex items-center space-x-2 bg-green-50 dark:bg-green-900/30 px-4 py-2 rounded-xl">
-                            <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                            <span class="text-sm font-medium text-green-700 dark:text-green-300">
-                                <span id="patientCount">0</span> pacienți activi
-                            </span>
-                        </div>
+                    <!-- Search Bar -->
+                    <div class="relative">
+                        <input type="text" id="patientSearch" placeholder="Caută pacienți..." class="w-full sm:w-80 px-4 py-2 pl-10 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent font-body bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none">
+                        <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                     </div>
                     
-                    <!-- Action Buttons -->
-                    <div class="flex items-center space-x-2">
-                        <!-- Refresh Button -->
-                        <button onclick="refreshPatients()" class="bg-gray-600 text-white px-4 py-2 rounded-xl hover:bg-gray-700 transition-colors flex items-center space-x-2 font-body font-medium">
-                            <i data-lucide="refresh-cw" class="w-4 h-4"></i>
-                            <span class="hidden sm:inline">Reîmprospătează</span>
-                        </button>
-                        
-                        <!-- Add Patient Button -->
-                        <button data-modal-target="addPatientModal" class="bg-purple-600 text-white px-4 py-2 rounded-xl hover:bg-purple-700 transition-colors flex items-center space-x-2 font-body font-medium">
-                            <i data-lucide="plus" class="w-4 h-4"></i>
-                            <span>Adaugă Pacient</span>
-                        </button>
-                    </div>
+                    <!-- Add Patient Button -->
+                    <button data-modal-target="addPatientModal" class="bg-purple-600 text-white px-4 py-2 rounded-xl hover:bg-purple-700 transition-colors flex items-center space-x-2 font-body font-medium">
+                        <i data-lucide="plus" class="w-4 h-4"></i>
+                        <span>Adaugă Pacient</span>
+                    </button>
                 </div>
             </div>
 
