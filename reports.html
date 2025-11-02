@@ -139,7 +139,7 @@
 
         <main class="flex-1 overflow-y-auto p-4 sm:p-6 bg-gray-50 dark:bg-gray-900">
             <!-- Key Metrics -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-6 mb-8">
                 <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-neutral-200 dark:border-gray-700 hover-lift">
                     <div class="flex items-center justify-between">
                         <div>
@@ -153,36 +153,11 @@
                     </div>
                 </div>
 
-                <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-neutral-200 dark:border-gray-700 hover-lift">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-neutral-600 dark:text-gray-400 text-sm font-medium">Timpul Mediu de Așteptare</p>
-                            <p class="text-3xl font-bold text-neutral-800 dark:text-white mt-1">18 min</p>
-                            <p class="text-green-600 text-sm mt-2">↗ îmbunătățire cu 3 min</p>
-                        </div>
-                        <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
-                            <i data-lucide="clock" class="w-6 h-6 text-blue-600 dark:text-blue-400"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-neutral-200 dark:border-gray-700 hover-lift">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-neutral-600 dark:text-gray-400 text-sm font-medium">Ocuparea Paturilor</p>
-                            <p class="text-3xl font-bold text-neutral-800 dark:text-white mt-1">87%</p>
-                            <p class="text-orange-600 text-sm mt-2">↗ +5% față de luna trecută</p>
-                        </div>
-                        <div class="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-xl flex items-center justify-center">
-                            <i data-lucide="bed" class="w-6 h-6 text-orange-600 dark:text-orange-400"></i>
-                        </div>
-                    </div>
-                </div>
 
             </div>
 
             <!-- Charts Section -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div class="grid grid-cols-1 lg:grid-cols-1 gap-6 mb-8">
                 <!-- New Patients Chart -->
                 <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-neutral-200 dark:border-gray-700">
                     <div class="flex items-center justify-between mb-6">
@@ -198,21 +173,6 @@
                     </div>
                 </div>
 
-                <!-- Revenue Analysis -->
-                <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-neutral-200 dark:border-gray-700">
-                    <div class="flex items-center justify-between mb-6">
-                        <h3 class="text-lg font-semibold text-neutral-800 dark:text-white">Analiza Veniturilor</h3>
-                        <select class="border border-neutral-300 dark:border-gray-600 rounded-lg px-3 py-1 text-sm bg-white dark:bg-gray-700 text-neutral-800 dark:text-white focus:outline-none">
-                            <option>Anul Acesta</option>
-                            <option>Anul Trecut</option>
-                            <option>Compară Anii</option>
-                        </select>
-                    </div>
-                     <div class="chart-container">
-                        <canvas id="revenueChart"></canvas>
-                    </div>
-                    
-                </div>
             </div>
         </main>
          <!-- Footer -->
